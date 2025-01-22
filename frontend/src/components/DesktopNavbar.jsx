@@ -7,6 +7,7 @@ const DesktopNavbar = () => {
       <Link className="font-kufam text-4xl font-extrabold" to="/">
         AFK
       </Link>
+      <Link to="/ranking"> Ranking </Link>
       <Link to="/upload"> Upload </Link>
       <Link to="/modify"> Modify </Link>
       <Link to="/profile"> Profile </Link>
