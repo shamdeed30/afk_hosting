@@ -209,46 +209,59 @@ const Search = () => {
     setWeek(event.target.value);
   };
 
-  // get request for game stats (expects a list of game objects)
-  const getGameReports = async () => {
+   // Function to fetch game reports from the backend
+   const getGameReports = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/stats/${game}/${week}`,
-      );
+      const response = await fetch(`http://localhost:3000/stats/${game}/${week}`);
+      // const response = await fetch(`http://127.0.0.1:5000/stats/${game}/${week}`); 
+      // Change the URL to the backend server URL when Flask is up and running
 
       if (response.ok) {
-        const data = await response.json();
-
-        setGameReports([...gameReports, data]);
+        const data = await response.json(); 
+        setGameReports([data]); 
+      } else {
+        console.error("No data found"); 
       }
     } catch (error) {
-      throw new Error("Error getting game stats.");
+      console.error("Error fetching game stats:", error);
     }
   };
 
-  // update stats when filters get changed
-  // useEffect(() => {
-  //   getGameReports();
-  // }, [game, week]);
+  useEffect(() => {
+    getGameReports(); 
+  }, [game, week]);
 
   return (
     <div className="w-3/4 py-8">
+      {/* Page title */}
       <h2 className="py-8 text-3xl"> Search </h2>
 
+      {/* Dropdowns for selecting game and week */}
       <div className="flex">
-        <select className="py-8" onChange={handleGameChange}>
+        <select
+          className="py-8 border border-gray-300 rounded-lg"
+          onChange={handleGameChange}
+          value={game}
+        >
           <option value="valorant">Valorant</option>
-          <option value="apex-legends"> Apex Legends </option>
-          <option value="rocket-league"> Rocket League </option>
+          <option value="apex-legends">Apex Legends</option>
+          <option value="rocket-league">Rocket League</option>
         </select>
-        <select className="mx-8 py-8" onChange={handleWeekChange}>
-          <option value="week1"> Week 1 </option>
-          <option value="week2"> Week 2 </option>
-          <option value="week3"> Week 3 </option>
-          <option value="week4"> Week 4 </option>
-          <option value="week5"> Week 5 </option>
-          <option value="week6"> Week 6 </option>
+
+        <select
+          className="mx-8 py-8 border border-gray-300 rounded-lg"
+          onChange={handleWeekChange}
+          value={week}
+        >
+          <option value="week1">Week 1</option>
+          <option value="week2">Week 2</option>
+          <option value="week3">Week 3</option>
+          <option value="week4">Week 4</option>
+          <option value="week5">Week 5</option>
+          <option value="week6">Week 6</option>
         </select>
+
+        {/* Input for player search (currently not connected to backend) */}
         <input
           type="text"
           placeholder="Find a player's stats by name"
@@ -256,12 +269,14 @@ const Search = () => {
         />
       </div>
 
+      {/* Render game reports dynamically */}
       <div className="py-8">
-        {gameReports.map((gameReport) => (
+        {gameReports.map((gameReport, index) => (
           <GameCard
-            match={gameReport.match}
-            teamStats={gameReport.teamStats}
-            opponentStats={gameReport.opponentStats}
+            key={index} // Unique game key for each report
+            match={gameReport.match} // Match information
+            teamStats={gameReport.teamStats} // Team stats
+            opponentStats={gameReport.opponentStats} // Opponent stats
           />
         ))}
       </div>
