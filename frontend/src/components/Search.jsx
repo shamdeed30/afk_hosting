@@ -4,7 +4,209 @@ import GameCard from "./GameCard";
 const Search = () => {
   const [game, setGame] = useState("valorant");
   const [week, setWeek] = useState("week1");
-  const [gameReports, setGameReports] = useState([]);
+  const [gameReports, setGameReports] = useState([
+    {
+      match: {
+        school: "Colorado College",
+        opponent: "Trinity University",
+        didWin: true,
+        teamScore: 5,
+        opponentScore: 3,
+      },
+      teamStats: [
+        {
+          school: "Colorado College",
+          playerName: "Sir James",
+          score: 780,
+          goals: 3,
+          assists: 2,
+          saves: 4,
+          shots: 7,
+        },
+        {
+          school: "Colorado College",
+          playerName: "Penguin",
+          score: 620,
+          goals: 1,
+          assists: 1,
+          saves: 3,
+          shots: 5,
+        },
+        {
+          school: "Colorado College",
+          player_name: "Pineapple",
+          score: 540,
+          goals: 1,
+          assists: 0,
+          saves: 2,
+          shots: 4,
+        },
+      ],
+      opponentStats: [
+        {
+          school: "Trinity University",
+          playerName: "GiraffeMan",
+          score: 700,
+          goals: 2,
+          assists: 1,
+          saves: 2,
+          shots: 6,
+        },
+        {
+          school: "Trinity University",
+          playerName: "Dog lover",
+          score: 500,
+          goals: 1,
+          assists: 0,
+          saves: 3,
+          shots: 5,
+        },
+        {
+          school: "Trinity University",
+          playerName: "Cpt. Morgan",
+          score: 450,
+          goals: 0,
+          assists: 2,
+          saves: 1,
+          shots: 3,
+        },
+      ],
+    },
+    {
+      match: {
+        school: "Colorado College",
+        opponent: "Trinity University",
+        didWin: true,
+        teamScore: 5,
+        opponentScore: 3,
+      },
+      teamStats: [
+        {
+          school: "Colorado College",
+          playerName: "Sir James",
+          score: 780,
+          goals: 3,
+          assists: 2,
+          saves: 4,
+          shots: 7,
+        },
+        {
+          school: "Colorado College",
+          playerName: "Penguin",
+          score: 620,
+          goals: 1,
+          assists: 1,
+          saves: 3,
+          shots: 5,
+        },
+        {
+          school: "Colorado College",
+          player_name: "Pineapple",
+          score: 540,
+          goals: 1,
+          assists: 0,
+          saves: 2,
+          shots: 4,
+        },
+      ],
+      opponentStats: [
+        {
+          school: "Trinity University",
+          playerName: "GiraffeMan",
+          score: 700,
+          goals: 2,
+          assists: 1,
+          saves: 2,
+          shots: 6,
+        },
+        {
+          school: "Trinity University",
+          playerName: "Dog lover",
+          score: 500,
+          goals: 1,
+          assists: 0,
+          saves: 3,
+          shots: 5,
+        },
+        {
+          school: "Trinity University",
+          playerName: "Cpt. Morgan",
+          score: 450,
+          goals: 0,
+          assists: 2,
+          saves: 1,
+          shots: 3,
+        },
+      ],
+    },
+    {
+      match: {
+        school: "Colorado College",
+        opponent: "Trinity University",
+        didWin: true,
+        teamScore: 5,
+        opponentScore: 3,
+      },
+      teamStats: [
+        {
+          school: "Colorado College",
+          playerName: "Sir James",
+          score: 780,
+          goals: 3,
+          assists: 2,
+          saves: 4,
+          shots: 7,
+        },
+        {
+          school: "Colorado College",
+          playerName: "Penguin",
+          score: 620,
+          goals: 1,
+          assists: 1,
+          saves: 3,
+          shots: 5,
+        },
+        {
+          school: "Colorado College",
+          player_name: "Pineapple",
+          score: 540,
+          goals: 1,
+          assists: 0,
+          saves: 2,
+          shots: 4,
+        },
+      ],
+      opponentStats: [
+        {
+          school: "Trinity University",
+          playerName: "GiraffeMan",
+          score: 700,
+          goals: 2,
+          assists: 1,
+          saves: 2,
+          shots: 6,
+        },
+        {
+          school: "Trinity University",
+          playerName: "Dog lover",
+          score: 500,
+          goals: 1,
+          assists: 0,
+          saves: 3,
+          shots: 5,
+        },
+        {
+          school: "Trinity University",
+          playerName: "Cpt. Morgan",
+          score: 450,
+          goals: 0,
+          assists: 2,
+          saves: 1,
+          shots: 3,
+        },
+      ],
+    },
+  ]);
 
   const handleGameChange = (event) => {
     setGame(event.target.value);
@@ -14,21 +216,20 @@ const Search = () => {
     setWeek(event.target.value);
   };
 
-   // Function to fetch game reports from the backend
-   const getGameReports = async () => {
+  // Function to fetch game reports from the backend
+  const getGameReports = async () => {
     try {
-      
-      // const response = await fetch(`http://127.0.0.1:5000/stats/${game}/${week}`); 
+      // const response = await fetch(`http://127.0.0.1:5000/stats/${game}/${week}`);
       // Change the URL to the backend server URL when Flask is up and running
       const response = await fetch(
         `http://localhost:8080/stats/${game}/${week}`,
       );
-      
+
       if (response.ok) {
-        const data = await response.json(); 
-        setGameReports([data]); 
+        const data = await response.json();
+        setGameReports([data]);
       } else {
-        console.error("No data found"); 
+        console.error("No data found");
       }
     } catch (error) {
       console.error("Error fetching game stats:", error);
@@ -36,9 +237,9 @@ const Search = () => {
   };
 
   // update stats when filters get changed
-  useEffect(() => {
-    getGameReports();
-  }, [game, week]);
+  // useEffect(() => {
+  //   getGameReports();
+  // }, [game, week]);
 
   return (
     <div className="w-3/4 py-8">
@@ -48,7 +249,7 @@ const Search = () => {
       {/* Dropdowns for selecting game and week */}
       <div className="flex">
         <select
-          className="py-8 border border-gray-300 rounded-lg"
+          className="border-black-300 rounded-lg border py-8"
           onChange={handleGameChange}
           value={game}
         >
@@ -58,7 +259,7 @@ const Search = () => {
         </select>
 
         <select
-          className="mx-8 py-8 border border-gray-300 rounded-lg"
+          className="mx-8 rounded-lg border border-gray-300 py-8"
           onChange={handleWeekChange}
           value={week}
         >
