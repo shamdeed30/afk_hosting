@@ -32,7 +32,6 @@ const RankingPage = () => {
   );
 };
 
-// Demo data for Rocket League and Valorant
 const RLAndValTable = () => {
   return (
     <div className="w-3/4">
@@ -61,7 +60,6 @@ const RLAndValTable = () => {
   );
 };
 
-// Demo data for Apex Legends
 const ApexTable = () => {
   return (
     <div className="w-3/4">
