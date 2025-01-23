@@ -8,7 +8,7 @@ codewords = []
 # Read the image
 for i in range(1, 7):
     print(f"Image {i}:")
-    image = cv2.imread(f'Apex/{i}.png')
+    image = cv2.imread(f'Apex/Scoreboards/{i}.png')
     # Define the coordinates of the region of interest (ROI)
     x, y, w, h = 0, 50, 530, 30
     k, l, m, n = 1450, 120, 150, 75
@@ -76,7 +76,7 @@ for i in range(1, 7):
     img2 = cv2.imread(f'imgs/p1{i}.png', cv2.IMREAD_GRAYSCALE)
     ret, thresh2 = cv2.threshold(img2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     thresh2 = cv2.adaptiveThreshold(
-        ~thresh2, 
+        thresh2, 
         MAX_COLOR_VAL, 
         cv2.ADAPTIVE_THRESH_MEAN_C, 
         cv2.THRESH_BINARY, 
