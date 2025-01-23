@@ -8,14 +8,14 @@ image = cv2.imread('Apex_Scoreboard.png')
 # Define the coordinates of the region of interest (ROI)
 x, y, w, h = 100, 50, 330, 50
 k, l, m, n = 1470, 120, 100, 75
-aa, ab, ac, ad, ae = 200, 270, 220, 250, 475
+aa, ab, ac, ad, ae = 200, 270, 200, 250, 475
 
 # Crop the image
 cropped_image_codeword = image[y:y+h, x:x+w]
 cropped_image_placement = image[l:l+n, k:k+m]
 cropped_img_p1 = image[ab:ab+ad, aa:aa+ac]
 cropped_img_p2 = image[ab:ab+ad, aa+ae:aa+ac+ae]
-cropped_img_p3 = image[ab:ab+ad, aa+(2*ae):aa+(2*ae)+ac+150]
+cropped_img_p3 = image[ab:ab+ad, aa+(ac):aa+(2*ae)+ac+150]
 
 cropped_image_codeword = cv2.resize(cropped_image_codeword, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 cropped_image_placement = cv2.resize(cropped_image_placement, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
