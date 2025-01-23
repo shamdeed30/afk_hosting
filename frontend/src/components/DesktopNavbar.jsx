@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { CgProfile } from "react-icons/cg";
 
 const DesktopNavbar = () => {
   return (
@@ -7,10 +8,18 @@ const DesktopNavbar = () => {
       <Link className="font-kufam text-4xl font-extrabold" to="/">
         AFK
       </Link>
-      <Link to="/ranking"> Ranking </Link>
-      <Link to="/upload"> Upload </Link>
-      <Link to="/modify"> Modify </Link>
-      <Link to="/profile"> Profile </Link>
+      <Link className="font-bold" to="/ranking">
+        Ranking
+      </Link>
+      <Link className="font-bold" to="/upload">
+        Upload
+      </Link>
+      <Link className="font-bold" to="/modify">
+        Modify
+      </Link>
+      <Link className="font-bold" to="/profile">
+        <CgProfile className="h-auto w-8" />
+      </Link>
     </nav>
   );
 };
