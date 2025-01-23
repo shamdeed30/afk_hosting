@@ -29,16 +29,17 @@ def get_game_stats(game, week):
     try:
         # Fetch match stats
         cursor.execute(
-            "SELECT * FROM game_stats WHERE game=%s AND week=%s", (game, week)
+            "SELECT school, opponent, did_win, team_score, opponent_score FROM %s_game WHERE week=%s GROUP BY game_id", (game, week)
         )
-        match = cursor.fetchone()
+        
+        matches = cursor.fetchall()
 
         if not match:
             return jsonify({"error": "No data available"}), 404
 
         # Fetch player stats for the match
         cursor.execute(
-            "SELECT * FROM player_stats WHERE game_id=%s", (match['id'],)
+            "SELECT player_name, score, goals, assists, saves, shots FROM %s_game WHERE game_id=%s", (game, match['game_id'],)
         )
         player_stats = cursor.fetchall()
 
