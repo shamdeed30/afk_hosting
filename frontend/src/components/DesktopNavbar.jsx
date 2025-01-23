@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const DesktopNavbar = () => {
   return (
-    <nav className="flex h-full justify-between border-b p-8">
+    <nav className="sticky top-0 flex h-full justify-between border-b bg-white p-8">
       <Link className="font-kufam text-4xl font-extrabold" to="/">
         AFK
       </Link>
