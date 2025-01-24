@@ -18,7 +18,7 @@ const GameCard = (props) => {
       <table className="w-full table-auto border border-black text-left">
         <tr className="border border-black">
           {Object.keys(teamStats[0]).map((header) => (
-            <th className="border border-black p-4"> {header} </th>
+            <th className="border border-black p-4">{header.toUpperCase()}</th>
           ))}
         </tr>
 

@@ -3,7 +3,7 @@ from flask_cors import CORS
 import pymysql
 import bcrypt
 
-# ssh -i ~/.ssh/AFK-VM_key.pem jcandrews2@52.233.73.156
+#db setting needed: SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 app = Flask(__name__)
 CORS(app)
 
@@ -79,6 +79,7 @@ def get_game_stats(game, week):
         return jsonify(response)
     
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
     
     finally:
@@ -125,4 +126,3 @@ def login():
 
 if __name__ == "__main__": 
     app.run(port=8080, debug=True)
-
