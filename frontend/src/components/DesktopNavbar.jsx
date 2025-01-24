@@ -4,20 +4,20 @@ import { CgProfile } from "react-icons/cg";
 
 const DesktopNavbar = () => {
   return (
-    <nav className="sticky top-0 flex h-full justify-between border-b bg-white p-8">
-      <Link className="font-kufam text-4xl font-extrabold" to="/">
+    <nav className="sticky top-0 flex h-full justify-between bg-zinc-900 p-8">
+      <Link className="font-kufam text-4xl font-extrabold text-white" to="/">
         AFK
       </Link>
-      <Link className="font-bold" to="/ranking">
+      <Link className="font-bold text-white" to="/ranking">
         Ranking
       </Link>
-      <Link className="font-bold" to="/upload">
+      <Link className="font-bold text-white" to="/upload">
         Upload
       </Link>
-      <Link className="font-bold" to="/modify">
+      <Link className="font-bold text-white" to="/modify">
         Modify
       </Link>
-      <Link className="font-bold" to="/profile">
+      <Link className="font-bold text-white" to="/profile">
         <CgProfile className="h-auto w-8" />
       </Link>
     </nav>

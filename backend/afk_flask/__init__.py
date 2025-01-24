@@ -3,12 +3,12 @@ from flask_cors import CORS
 import pymysql
 import bcrypt
 
-# ssh -i ~/.ssh/AFK-VM_key.pem jcandrews2@52.233.73.156
+#db setting needed: SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 app = Flask(__name__)
 CORS(app)
 
 # MySQL Configuration
-app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'afkuser'
 app.config['MYSQL_PASSWORD'] = 'afk'
 app.config['MYSQL_DB'] = 'SCAC_STATS'
@@ -167,4 +167,5 @@ def login():
 
 if __name__ == "__main__": 
     app.run(host='0.0.0.0',port=8080, debug=True)
+
 
