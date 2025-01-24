@@ -51,9 +51,9 @@ const Search = () => {
           onChange={handleGameChange}
           value={game}
         >
-          <option value="valorant">Valorant</option>
-          <option value="apex-legends">Apex Legends</option>
-          <option value="rocket-league">Rocket League</option>
+          <option value="RL">Rocket League</option>
+          <option value="Val">Valorant</option>
+          <option value="Apex">Apex Legends</option>
         </select>
 
         <select
