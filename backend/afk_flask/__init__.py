@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 # MySQL Configuration
-app.config['MYSQL_HOST'] = '40.85.147.30'
+app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'SCAC_STATS'
@@ -124,5 +124,5 @@ def login():
         conn.close()
 
 if __name__ == "__main__": 
-    app.run(host=40.85.147.30 ,port=8080, debug=True)
+    app.run(host='0.0.0.0',port=8080, debug=True)
 
