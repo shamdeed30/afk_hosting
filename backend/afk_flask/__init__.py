@@ -10,7 +10,7 @@ CORS(app)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = '127.0.0.1'
 app.config['MYSQL_USER'] = 'afkuser'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'afk'
 app.config['MYSQL_DB'] = 'SCAC_STATS'
 
 # Database connection
