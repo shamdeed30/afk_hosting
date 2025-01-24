@@ -8,10 +8,10 @@ app = Flask(__name__)
 CORS(app)
 
 # MySQL Configuration
-app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_HOST'] = '40.85.147.30'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'AFK'
+app.config['MYSQL_DB'] = 'SCAC_STATS'
 
 # Database connection
 def get_db_connection():
