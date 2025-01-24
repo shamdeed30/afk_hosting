@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import GameCard from "./GameCard";
 
 const Search = () => {
-  const [game, setGame] = useState("valorant");
-  const [week, setWeek] = useState("week1");
+  const [game, setGame] = useState("RL");
+  const [week, setWeek] = useState("1");
   const [gameReports, setGameReports] = useState([]);
 
   const handleGameChange = (event) => {
@@ -17,16 +17,15 @@ const Search = () => {
   // Function to fetch game reports from the backend
   const getGameReports = async () => {
     try {
-      // const response = await fetch(`http://127.0.0.1:5000/stats/${game}/${week}`);
-      // Change the URL to the backend server URL when Flask is up and running
       const response = await fetch(
-        `http://10.1.0.4:8080/stats/${game}/${week}`,
+        `http://localhost:8080/stats/${game}/${week}`,
       );
 
       if (response.ok) {
         const data = await response.json();
-        setGameReports([data]);
+        setGameReports(data);
       } else {
+        setGameReports([]);
         console.error("No data found");
       }
     } catch (error) {
@@ -35,9 +34,13 @@ const Search = () => {
   };
 
   // update stats when filters get changed
-  // useEffect(() => {
-  //   getGameReports();
-  // }, [game, week]);
+  useEffect(() => {
+    getGameReports();
+  }, [game, week]);
+
+  useEffect(() => {
+    console.log(gameReports);
+  }, [gameReports]);
 
   return (
     <div className="w-3/4 py-8">
@@ -61,13 +64,13 @@ const Search = () => {
           onChange={handleWeekChange}
           value={week}
         >
-          <option value="week1">Week 1</option>
-          <option value="week2">Week 2</option>
-          <option value="week3">Week 3</option>
-          <option value="week4">Week 4</option>
-          <option value="week5">Week 5</option>
-          <option value="week6">Week 6</option>
-          <option value="week6">Season Averages</option>
+          <option value="1">Week 1</option>
+          <option value="2">Week 2</option>
+          <option value="3">Week 3</option>
+          <option value="4">Week 4</option>
+          <option value="5">Week 5</option>
+          <option value="6">Week 6</option>
+          <option value="7">Season Averages</option>
         </select>
 
         {/* Input for player search (currently not connected to backend) */}

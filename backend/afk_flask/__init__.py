@@ -11,7 +11,7 @@ CORS(app)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'SCAC_STATS'
+app.config['MYSQL_DB'] = 'AFK'
 
 # Database connection
 def get_db_connection():
@@ -21,7 +21,6 @@ def get_db_connection():
         password=app.config['MYSQL_PASSWORD'],
         database=app.config['MYSQL_DB']
     )
-
 @app.route('/stats/<game>/<week>', methods=['GET'])
 def get_game_stats(game, week):
     conn = get_db_connection()
@@ -29,13 +28,13 @@ def get_game_stats(game, week):
 
     # Define game-specific queries and columns
     game_queries = {
-        "rocket-league": {
+        "RL": {
             "match_query": """
                 SELECT game_id, school, opponent, did_win, team_score, opponent_score 
                 FROM RL_game 
-                WHERE week_num = %s 
+                WHERE week_number = %s 
                 GROUP BY game_id 
-                ORDER BY game_num
+                ORDER BY game_number
             """,
             "player_query": """
                 SELECT school, player_name, score, goals, assists, saves, shots 
@@ -43,13 +42,13 @@ def get_game_stats(game, week):
                 WHERE game_id = %s
             """
         },
-        "valorant": {
+        "Val": {
             "match_query": """
-                SELECT game_id, school, opponent, did_win, opponent_score 
+                SELECT game_id, school, opponent, did_win, team_score, opponent_score 
                 FROM Val_game 
-                WHERE week_num = %s 
+                WHERE week_number = %s 
                 GROUP BY game_id 
-                ORDER BY game_num
+                ORDER BY game_number
             """,
             "player_query": """
                 SELECT school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses 
@@ -57,13 +56,13 @@ def get_game_stats(game, week):
                 WHERE game_id = %s
             """
         },
-        "apex-legends": {
+        "Apex": {
             "match_query": """
                 SELECT game_id, school, opponent, placement AS team_placement 
                 FROM Apex_game 
-                WHERE week_num = %s 
+                WHERE week_number = %s 
                 GROUP BY game_id 
-                ORDER BY game_num
+                ORDER BY game_number
             """,
             "player_query": """
                 SELECT school, player_name, kills, assists, knocks, damage, score 
@@ -76,7 +75,7 @@ def get_game_stats(game, week):
     try:
         # Check if the game is supported
         if game not in game_queries:
-            return jsonify({"error": f"Game '{game}' data is not available"}), 400
+            return jsonify({"error": f"Game '{game}' is not supported"}), 400
 
         # Fetch all matches for the given week
         cursor.execute(game_queries[game]["match_query"], (week,))
@@ -112,7 +111,7 @@ def get_game_stats(game, week):
                 "opponentStats": opponent_stats
             }
 
-            # Since Apex has placement data
+            # Apex has placement instead of scores
             if game == "apex-legends":
                 match_data["match"]["placement"] = match.get("team_placement")
 
@@ -121,12 +120,12 @@ def get_game_stats(game, week):
         return jsonify(response)
     
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
     
     finally:
         cursor.close()
         conn.close()
-
 
 
 @app.route('/login', methods=['GET', 'POST'])
