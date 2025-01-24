@@ -124,5 +124,5 @@ def login():
         conn.close()
 
 if __name__ == "__main__": 
-    app.run(port=8080, debug=True)
+    app.run(host=40.85.147.30 ,port=8080, debug=True)
 
