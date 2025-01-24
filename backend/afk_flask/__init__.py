@@ -27,36 +27,53 @@ def get_game_stats(game, week):
     cursor = conn.cursor(pymysql.cursors.DictCursor)
 
     try:
-        # Fetch match stats
-
-        # TODO: I think we need to change this to select from the correct game table. 
-        cursor.execute(
-            "SELECT school, opponent, did_win, team_score, opponent_score FROM %s_game WHERE week=%s GROUP BY game_id", (game, week)
-        )
-        
+        # Fetch all matches for the given week
+        query = f"""
+        SELECT game_id, school, opponent, did_win, team_score, opponent_score 
+        FROM {game}_game 
+        WHERE week_number = %s 
+        GROUP BY game_id 
+        ORDER BY game_number
+        """
+        cursor.execute(query, (week,))
         matches = cursor.fetchall()
 
-        if not match:
-            return jsonify({"error": "No data available"}), 404
+        if not matches:
+            return jsonify({"error": "No matches found for this week"}), 404
 
-        # Fetch player stats for the match
-        cursor.execute(
-            "SELECT player_name, score, goals, assists, saves, shots FROM %s_game WHERE game_id=%s", (game, match['game_id'],)
-        )
-        player_stats = cursor.fetchall()
+        # Prepare the response structure
+        response = []
 
-        # Organize response data
-        response = {
-            "match": {
-                "school": match['school'],
-                "opponent": match['opponent'],
-                "didWin": match['did_win'],
-                "teamScore": match['team_score'],
-                "opponentScore": match['opponent_score']
-            },
-            "teamStats": [player for player in player_stats if player['school'] == match['school']],
-            "opponentStats": [player for player in player_stats if player['school'] == match['opponent']]
-        }
+        for match in matches:
+            game_id = match['game_id']
+
+            # Fetch player stats for the match
+            cursor.execute(
+                f"""
+                SELECT school, player_name, score, goals, assists, saves, shots 
+                FROM {game}_game 
+                WHERE game_id = %s
+                """,
+                (game_id,)
+            )
+            player_stats = cursor.fetchall()
+
+            # Separate stats into teamStats and opponentStats
+            team_stats = [player for player in player_stats if player['school'] == match['school']]
+            opponent_stats = [player for player in player_stats if player['school'] == match['opponent']]
+
+            # Add match and stats to the response
+            response.append({
+                "match": {
+                    "school": match['school'],
+                    "opponent": match['opponent'],
+                    "didWin": bool(match['did_win']),
+                    "teamScore": match['team_score'],
+                    "opponentScore": match['opponent_score']
+                },
+                "teamStats": team_stats,
+                "opponentStats": opponent_stats
+            })
 
         return jsonify(response)
     except Exception as e:
@@ -64,6 +81,7 @@ def get_game_stats(game, week):
     finally:
         cursor.close()
         conn.close()
+
 
 if __name__ == "__main__": 
     app.run(port=8080, debug=True)
