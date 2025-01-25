@@ -18,7 +18,7 @@ const Search = () => {
   const getGameReports = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stats/${game}/${week}`,
+        `http://40.85.147.30:8080/stats/${game}/${week}`,
       );
 
       if (response.ok) {
@@ -37,10 +37,6 @@ const Search = () => {
   useEffect(() => {
     getGameReports();
   }, [game, week]);
-
-  useEffect(() => {
-    console.log(gameReports);
-  }, [gameReports]);
 
   return (
     <div className="w-3/4 py-8">
