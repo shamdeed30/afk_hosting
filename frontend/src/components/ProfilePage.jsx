@@ -1,42 +1,34 @@
-import React, { useState, useRef } from "react";
-// i think may have to use useContext to lock other pages based on if they're logged in
+import React, { useRef } from "react";
+import { useAuth } from "./AuthContext";
 
 const ProfilePage = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
   const usernameInput = useRef();
   const passwordInput = useRef();
 
-  const handleLogin = async () => {
-    console.log(usernameInput.current.value);
-    console.log(passwordInput.current.value);
-    try {
-      const response = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: usernameInput.current.value,
-          password: passwordInput.current.value,
-        }),
-      });
+  const { username, loggedIn, login, logout } = useAuth();
 
-      if (response.ok) {
-        setLoggedIn(true);
-      } else {
-        console.log();
-      }
-    } catch (error) {
-      console.error("Invalid credentials.", error);
-    }
+  const handleLogin = () => {
+    login(usernameInput.current.value, passwordInput.current.value);
   };
 
   return (
     <div className="flex justify-center">
       {loggedIn ? (
-        <div>
-          <h2> Username </h2>
-          <p> Forgot Password </p>
+        <div className="flex flex-col items-center p-8">
+          <h2 className="p-8 text-2xl font-bold">Username:</h2>
+          <h3 className="p-8 text-xl"> {username} </h3>
+          <button
+            className="rounded-lg border bg-blue-500 p-4 text-white"
+            onClick={logout}
+          >
+            Logout
+          </button>
+          <a
+            href="mailto:p_hour@coloradocollege.edu"
+            className="text-xl text-black"
+          >
+            Forgot Password
+          </a>
         </div>
       ) : (
         <div className="flex flex-col items-center p-8">

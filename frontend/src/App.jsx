@@ -5,6 +5,7 @@ import HomePage from "./components/HomePage";
 import UploadPage from "./components/UploadPage";
 import RankingPage from "./components/RankingPage";
 import ProfilePage from "./components/ProfilePage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ModifyPage from "./components/ModifyPage";
 
 function App() {
@@ -15,9 +16,14 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/ranking" element={<RankingPage />} />
-        <Route path="/upload" element={<UploadPage />} />
-        <Route path="/modify" element={<ModifyPage />} />
-        <Route path="/modify" element={<HomePage />} />
+        <Route
+          path="/upload"
+          element={<ProtectedRoute page={<UploadPage />} />}
+        />
+        <Route
+          path="/modify"
+          element={<ProtectedRoute page={<ModifyPage />} />}
+        />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </div>

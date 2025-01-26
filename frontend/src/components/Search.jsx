@@ -38,10 +38,6 @@ const Search = () => {
     getGameReports();
   }, [game, week]);
 
-  useEffect(() => {
-    console.log(gameReports);
-  }, [gameReports]);
-
   return (
     <div className="w-3/4 py-8">
       {/* Page title */}
