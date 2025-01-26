@@ -5,6 +5,7 @@ import HomePage from "./components/HomePage";
 import UploadPage from "./components/UploadPage";
 import RankingPage from "./components/RankingPage";
 import ProfilePage from "./components/ProfilePage";
+import ModifyPage from "./components/ModifyPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/ranking" element={<RankingPage />} />
         <Route path="/upload" element={<UploadPage />} />
+        <Route path="/modify" element={<ModifyPage />} />
         <Route path="/modify" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
