@@ -1,14 +1,24 @@
 import cv2 as cv
 import numpy as np
+from collections import defaultdict
+import re
 import pytesseract
 
+
+#UPLOAD REQUIREMENTS:
+#1. 1920 x 1080 resolution
+#2. 16:9 aspect ratio
+#3. No overlays (Discord, Outplayed, etc.)
+#4. Winning Team is responisble for uploading screenshots
+#5. If abnormal data is detected (e.g. 0 ACS, 0/0/0 KDA, 0 Econ Rating), uploader will be required to verify the data
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
 #Load screenshot
 for i in range(8):
-    players = {}
+    #                              ACS,   KDA,  Econ, FB,   P,   D
+    players = defaultdict(lambda: ('0', '0/0/0', '0', '0', '0', '0'))
     img_rgb = cv.imread(f'Valorant/Scoreboards/{i}.png')
 
     img_rgb = cv.resize(img_rgb, (1920, 1080))
@@ -43,7 +53,7 @@ for i in range(8):
     detections = []
 
     #Preprocess ROI
-    roi_gray = cv.GaussianBlur(roi_gray, (5, 5), 0)
+    #roi_gray = cv.GaussianBlur(roi_gray, (5, 5), 0)
     roi_gray = cv.Canny(roi_gray, 50, 150)
 
     #Perform template matching for each agent
@@ -154,6 +164,12 @@ for i in range(8):
         continue
     img_result = img_rgb.copy()
     final_detections = sorted(final_detections, key=lambda x: x[2][1])
+    #cv.imshow(f'OCR MAP NAME', img_map)
+    #cv.waitKey(0)
+    ocr_map = pytesseract.image_to_string(img_map, config='--psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    print(f"Map: {ocr_map.strip()}")
+    
+
     for score, agent, top_left, (w, h) in final_detections:
         bottom_right = (top_left[0] + w, top_left[1] + h)
         cv.rectangle(img_result, top_left, bottom_right, (0, 255, 0), 2)
@@ -163,9 +179,9 @@ for i in range(8):
 
         #Define ROI for OCR
         strip_x = top_left[0] + w
-        strip_y = top_left[1] + 10
+        strip_y = top_left[1] + 15
         strip_w = 1200
-        strip_h = h - 20
+        strip_h = h - 30
         strip = img_rgb[strip_y:strip_y + strip_h, strip_x:strip_x + strip_w]
         #cv.imshow(f'OCR ROI {agent}', strip)
         #cv.waitKey(0)
@@ -177,7 +193,7 @@ for i in range(8):
         255,
         cv.ADAPTIVE_THRESH_MEAN_C, 
         cv.THRESH_BINARY, 
-        15, 
+        3, 
         -2
     )
         #strip_gray = cv.GaussianBlur(strip_gray, (5, 5), 0)
@@ -187,58 +203,97 @@ for i in range(8):
 
         strip_name = strip_gray[:, :200]
         strip_stats = strip_gray[:, 300:]
-        strip_acs = strip_stats[:, :180]
-        strip_kda = strip_stats[:, 180:360]
-        strip_econ = strip_stats[:, 360:540]
-        strip_fb = strip_stats[:, 540:620]
-        strip_p = strip_stats[:, 620:800]
-        strip_d = strip_stats[:, 800:]
+        strip_acs = strip_stats[:, 70:130]
+        strip_kda = strip_stats[:, 200:370]
+        strip_econ = strip_stats[:, 380:500]
+        strip_fb = strip_stats[:, 560:620]
+        strip_p = strip_stats[:, 700:780]
+        strip_d = strip_stats[:, 780:]
 
-        #cv.imshow(f'OCR MAP NAME', img_map)
-        #cv.waitKey(0)
-
-        #cv.imshow(f'OCR ROI NAME {agent}', strip_name)
-        #cv.waitKey(0)
+        strips = [strip_acs, strip_kda, strip_econ, strip_fb, strip_p, strip_d]
 
         #cv.imshow(f'OCR ROI ACS {agent}', strip_acs)
         #cv.waitKey(0)
+        #cv.imshow(f'OCR ROI {agent}', s)
+        for s in strips:
+            s = cv.resize(s, None, fx=10, fy=10, interpolation=cv.INTER_LINEAR)
+            s = cv.adaptiveThreshold(
+            s, 
+            255,
+            cv.ADAPTIVE_THRESH_MEAN_C, 
+            cv.THRESH_BINARY, 
+            11, 
+            -2
+    )   
+            s = cv.Canny(s, 50, 150)
 
-        #cv.imshow(f'OCR ROI KDA {agent}', strip_kda)
-        #cv.waitKey(0)
+        if False: #i == 0:
+            cv.imshow(f'OCR ROI NAME {agent}', strip_name)
+            cv.waitKey(0)
 
-        #cv.imshow(f'OCR ROI Econ {agent}', strip_econ)
-        #cv.waitKey(0)
+            cv.imshow(f'OCR ROI ACS {agent}', strip_acs)
+            cv.waitKey(0)
 
-        #cv.imshow(f'OCR ROI FB {agent}', strip_fb)
-        #cv.waitKey(0)
-        
-        #cv.imshow(f'OCR ROI P {agent}', strip_p)
-        #cv.waitKey(0)
+            cv.imshow(f'OCR ROI KDA {agent}', strip_kda)
+            cv.waitKey(0)
 
-        #cv.imshow(f'OCR ROI D {agent}', strip_d)
-        #cv.waitKey(0)
+            cv.imshow(f'OCR ROI Econ {agent}', strip_econ)
+            cv.waitKey(0)
 
+            cv.imshow(f'OCR ROI FB {agent}', strip_fb)
+            cv.waitKey(0)
+            
+            cv.imshow(f'OCR ROI P {agent}', strip_p)
+            cv.waitKey(0)
 
-        ocr_map = pytesseract.image_to_string(img_map, config='--psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-        ocr_name = pytesseract.image_to_string(strip_gray, config='--psm 7 -c tessedit_char_whitelist="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234456789"')
-        ocr_acs = pytesseract.image_to_string(strip_acs, config='--psm 7 -c tessedit_char_whitelist=0123456789')
-        ocr_kda = pytesseract.image_to_string(strip_kda, config='--psm 7 -c tessedit_char_whitelist=0123456789/')
-        ocr_econ = pytesseract.image_to_string(strip_econ, config='--psm 7 -c tessedit_char_whitelist=0123456789')
-        ocr_fb = pytesseract.image_to_string(strip_fb, config='--psm 7 -c tessedit_char_whitelist=0123456789')
-        ocr_p = pytesseract.image_to_string(strip_p, config='--psm 7 -c tessedit_char_whitelist=0123456789')
-        ocr_d = pytesseract.image_to_string(strip_d, config='--psm 7 -c tessedit_char_whitelist=0123456789')
-        print(f"Map: {ocr_map.strip()}")
+            cv.imshow(f'OCR ROI D {agent}', strip_d)
+            cv.waitKey(0)
+        #Set OCR configurations
+        config0 = '--psm 7 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234456789'
+        config1 = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        config2 = '--psm 7 -c tessedit_char_whitelist=0123456789/'
+
+        #Perform OCR
+        ocr_name = pytesseract.image_to_string(strip_gray, config=config0)
+        ocr_acs = pytesseract.image_to_string(strip_acs, config=config1)
+        ocr_kda = pytesseract.image_to_string(strip_kda, config=config2)
+        ocr_econ = pytesseract.image_to_string(strip_econ, config=config1)
+        ocr_fb = pytesseract.image_to_string(strip_fb, config=config1)
+        ocr_p = pytesseract.image_to_string(strip_p, config=config1)
+        ocr_d = pytesseract.image_to_string(strip_d, config=config1)
         print(f"OCR Stats for {ocr_name.split(' ')[0]} on {agent}: {ocr_acs.strip()}, {ocr_kda.strip()}, {ocr_econ.strip()}, {ocr_fb.strip()}, {ocr_p.strip()}, {ocr_d.strip()}")
-        players[ocr_name.strip()] = ocr_acs.strip(), ocr_kda, ocr_econ.split('/'), ocr_fb.strip(), ocr_p.strip(), ocr_d.strip()
+        #Update player stats, using 0 if not found
+        current_acs, current_kda, current_econ, current_fb, current_p, current_d = players[ocr_name.split(' ')[0]]
+        if ocr_acs.strip():
+            current_acs = ocr_acs.strip()
 
+        #Fix KDA Formatting using regex
+        #TODO: MAKE OCR MORE ACCURATE BEFORE FORCING THIS CHECK
+        kda_matches = re.match(r'^(\d{1,2})/(\d{1,2})/(\d{1,2})$', ocr_kda.strip())
+        if kda_matches:
+            current_kda = ocr_kda.strip()
+        else:
+            current_kda = '0/0/0'
+        if ocr_econ.strip():
+            current_econ = ocr_econ.strip()
+        if ocr_fb.strip():
+            current_fb = ocr_fb.strip()
+        if ocr_p.strip():
+            current_p = ocr_p.strip()
+        if ocr_d.strip():
+            current_d = ocr_d.strip()
+        players[ocr_name.split(' ')[0]] = current_acs, current_kda, current_econ.split('/'), current_fb, current_p, current_d
+
+
+        #Draw rectangles and text on the result image
         cv.rectangle(img_result, (strip_x, strip_y), (strip_x + strip_w, strip_y + strip_h), (255, 0, 0), 2)
-        cv.putText(img_result, f'{ocr_name.strip()}', (strip_x, strip_y + 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-        cv.putText(img_result, f'ACS: {ocr_acs.strip()}', (strip_x + 360, strip_y+ 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-        cv.putText(img_result, f'KDA: {ocr_kda}', (strip_x + 480, strip_y+ 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-        cv.putText(img_result, f'Econ: {ocr_econ.strip()}', (strip_x + 600, strip_y+ 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-        cv.putText(img_result, f'FB: {ocr_fb.strip()}', (strip_x + 700, strip_y+ 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-        cv.putText(img_result, f'Plants: {ocr_p.strip()}', (strip_x + 800, strip_y+ 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-        cv.putText(img_result, f'Defuses: {ocr_d.strip()}', (strip_x + 900, strip_y+ 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'{ocr_name.split(' ')[0]}', (strip_x, strip_y + 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'ACS: {current_acs}', (strip_x + 360, strip_y+ 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'KDA: {current_kda}', (strip_x + 480, strip_y+ 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'Econ: {current_econ.strip()}', (strip_x + 700, strip_y+ 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'FB: {current_fb.strip()}', (strip_x + 880, strip_y+ 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'Plants: {current_p.strip()}', (strip_x + 980, strip_y+ 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        cv.putText(img_result, f'Defuses: {current_d.strip()}', (strip_x + 1080, strip_y+ 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
 
     #Save result
@@ -251,6 +306,6 @@ for i in range(8):
     #Print results
     print(f"Top 10 detections for scoreboard {i}:")
     for i, (score, agent, top_left, _) in enumerate(final_detections, 1):
-        print(f"{i}. Agent: {agent}, Score: {score:.2f}, Location: {top_left[0], top_left[1]}")
+        print(f"{i}. Agent: {agent}, Score: {score:.2f}, Location: {int(top_left[0]), int(top_left[1])}")
 
     print(f"Result saved to: {output_path}")
