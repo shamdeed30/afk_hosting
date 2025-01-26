@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const ModifyPage = () => {
   // Mock data for testing the form
   const mockData = {
-    game: "rocket-league",
+    game: "RL",
     week: "1",
     school: "Colorado College",
     opponent: "Stanford",
@@ -44,11 +44,29 @@ const ModifyPage = () => {
     setFormData({ ...formData, [key]: event.target.value });
   };
 
-  const handleSubmit = () => {
-    console.log("Verified and Submitted Data:", formData);
-    alert("Data verified and submitted!");
-    // TODO: Implement backend submission logic
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(
+        `http://40.85.147.30:8080/upload_match`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (response.ok) {
+        alert("Data submitted successfully!");
+      } else {
+        alert("Failed to submit data.");
+        console.error("Submission error:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      alert("Failed to submit data.");
+    }
   };
+
+  if (!formData) return <p>Loading match data...</p>;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
@@ -62,9 +80,9 @@ const ModifyPage = () => {
           value={formData.game}
           onChange={(e) => handleDropdownChange(e, "game")}
         >
-          <option value="rocket-league">Rocket League</option>
-          <option value="valorant">Valorant</option>
-          <option value="apex-legends">Apex Legends</option>
+          <option value="RL">Rocket League</option>
+          <option value="Val">Valorant</option>
+          <option value="Apex">Apex Legends</option>
         </select>
 
         <label className="block mb-2 font-medium">Week</label>
