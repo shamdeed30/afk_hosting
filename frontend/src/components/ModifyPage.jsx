@@ -46,14 +46,11 @@ const ModifyPage = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(
-        `http://40.85.147.30:8080/upload_match`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`http://localhost:8080/upload_match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       if (response.ok) {
         alert("Data submitted successfully!");
       } else {
@@ -69,14 +66,14 @@ const ModifyPage = () => {
   if (!formData) return <p>Loading match data...</p>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-4xl font-bold mb-8">Modify Game Data</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
+      <h1 className="mb-8 text-4xl font-bold">Modify Game Data</h1>
 
       {/* Editable Match Info */}
-      <div className="w-3/4 mb-8">
-        <label className="block mb-2 font-medium">Game</label>
+      <div className="mb-8 w-3/4">
+        <label className="mb-2 block font-medium">Game</label>
         <select
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           value={formData.game}
           onChange={(e) => handleDropdownChange(e, "game")}
         >
@@ -85,9 +82,9 @@ const ModifyPage = () => {
           <option value="Apex">Apex Legends</option>
         </select>
 
-        <label className="block mb-2 font-medium">Week</label>
+        <label className="mb-2 block font-medium">Week</label>
         <select
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           value={formData.week}
           onChange={(e) => handleDropdownChange(e, "week")}
         >
@@ -96,19 +93,19 @@ const ModifyPage = () => {
           <option value="3">Week 3</option>
         </select>
 
-        <label className="block mb-2 font-medium">School</label>
+        <label className="mb-2 block font-medium">School</label>
         <input
           type="text"
           value={formData.school}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           readOnly
         />
 
-        <label className="block mb-2 font-medium">Opponent</label>
+        <label className="mb-2 block font-medium">Opponent</label>
         <input
           type="text"
           value={formData.opponent}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           readOnly
         />
       </div>
@@ -119,9 +116,9 @@ const ModifyPage = () => {
           formData.players.map((player, index) => (
             <div
               key={index}
-              className="mb-6 border p-4 rounded-lg bg-white shadow"
+              className="mb-6 rounded-lg border bg-white p-4 shadow"
             >
-              <h3 className="font-bold mb-2">Player: {player.playerName}</h3>
+              <h3 className="mb-2 font-bold">Player: {player.playerName}</h3>
               {Object.entries(player).map(([key, value]) => (
                 <div key={key} className="mb-2">
                   <label className="block text-sm font-medium capitalize">
@@ -131,7 +128,7 @@ const ModifyPage = () => {
                     type="text"
                     value={value}
                     onChange={(e) => handleInputChange(e, index, key)}
-                    className="border p-2 w-full"
+                    className="w-full border p-2"
                     readOnly={key === "playerName" || key === "school"}
                   />
                 </div>
@@ -144,7 +141,7 @@ const ModifyPage = () => {
       </div>
 
       <button
-        className="mt-8 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
+        className="mt-8 rounded-lg bg-green-500 px-6 py-3 text-white transition hover:bg-green-600"
         onClick={handleSubmit}
       >
         Submit

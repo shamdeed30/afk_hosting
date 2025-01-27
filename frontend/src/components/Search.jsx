@@ -18,7 +18,7 @@ const Search = () => {
   const getGameReports = async () => {
     try {
       const response = await fetch(
-        `http://40.85.147.30:8080/stats/${game}/${week}`,
+        `http://localhost:8080/stats/${game}/${week}`,
       );
 
       if (response.ok) {
@@ -26,7 +26,7 @@ const Search = () => {
         setGameReports(data);
       } else {
         setGameReports([]);
-        console.error("No data found");
+        console.error("No stats found.");
       }
     } catch (error) {
       console.error("Error fetching game stats:", error);

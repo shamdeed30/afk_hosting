@@ -9,9 +9,9 @@ CORS(app)
 
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'afkuser'
-app.config['MYSQL_PASSWORD'] = 'afk'
-app.config['MYSQL_DB'] = 'SCAC_STATS'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'AFK'
 
 # Database connection
 def get_db_connection():
@@ -21,6 +21,7 @@ def get_db_connection():
         password=app.config['MYSQL_PASSWORD'],
         database=app.config['MYSQL_DB']
     )
+
 @app.route('/stats/<game>/<week>', methods=['GET'])
 def get_game_stats(game, week):
     conn = get_db_connection()
@@ -212,25 +213,20 @@ def login():
     conn = get_db_connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
 
-    data = request.get_json()  # Parse the JSON body of the request
+    data = request.get_json()
     username = data.get('username')
     password = data.get('password')
 
     try: 
-        # get row that matches username
         cursor.execute( 
-            "SELECT * from Admins WHERE username = %s", (username,)
+            "SELECT * from Users WHERE username = %s", (username,)
         )
 
         user = cursor.fetchone()
 
-        # DONT DELETE: It's for hashing passwords to store in the db for admin accounts
-        # print(bcrypt.hashpw('jca2CC66.'.encode('utf-8'), bcrypt.gensalt()))
-
         if user: 
-            # hash the password given by user and compare
             if bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')): 
-                return jsonify({"message": "Success"}, 200)
+                return jsonify({"username": user["username"], "isAdmin": bool(user["is_admin"])}, 200)
             else: 
                 return jsonify({"error": "Invalid credentials"}), 401
         else: 
@@ -244,7 +240,102 @@ def login():
         cursor.close()
         conn.close()
 
+@app.route('/accounts', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def accounts():
+    conn = get_db_connection()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    if request.method == 'GET': 
+        try: 
+            cursor.execute( 
+                "SELECT * from Users WHERE is_admin = 0"
+            )
+
+            response = []
+
+            users = cursor.fetchall()
+
+            for user in users: 
+
+                user_info = { 
+                    "username": user.get("username"),
+                }
+
+                response.append(user_info)
+
+            return jsonify(response), 200
+
+
+        except Exception as e: 
+            print(e)
+            return jsonify({"error": str(e)}), 500
+        
+        finally: 
+            cursor.close()
+            conn.close()
+
+    elif request.method == 'POST':
+
+        data = request.get_json()
+        username = data.get('username')
+        password = bcrypt.hashpw(data.get('password').encode('utf-8'), bcrypt.gensalt()).decode('UTF-8')
+
+        try: 
+            cursor.execute ( 
+                "INSERT INTO Users (username, password, is_admin) VALUES (%s, %s, 0)", (username, password)
+            )
+
+            return jsonify({"message": "Account created successfully."}), 200
+
+        except Exception as e: 
+            return jsonify({"error": str(e)}), 500
+        
+        finally: 
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+    elif request.method == 'PUT': 
+
+        data = request.get_json()
+        username = data.get('username')
+        password = bcrypt.hashpw(data.get('password').encode('utf-8'), bcrypt.gensalt()).decode('UTF-8')
+
+        try: 
+            cursor.execute ( 
+                "UPDATE Users SET password = %s WHERE username = %s", (password, username)
+            )
+
+            return jsonify({"message": "User password updated successfully."}), 200
+
+        except Exception as e: 
+            return jsonify({"error": str(e)}), 500
+        
+        finally: 
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+    elif request.method == 'DELETE': 
+
+        data = request.get_json()
+        username = data.get('username')
+
+        try: 
+            cursor.execute ( 
+                "DELETE FROM Users WHERE username = %s", (username,)
+            )
+
+            return jsonify({"message": "Account deleted successfully."}), 200
+
+        except Exception as e: 
+            return jsonify({"error": str(e)}), 500
+        
+        finally: 
+            conn.commit()
+            cursor.close()
+            conn.close()
+        
+
 if __name__ == "__main__": 
     app.run(host='0.0.0.0',port=8080, debug=True)
-
-
