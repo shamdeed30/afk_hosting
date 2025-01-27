@@ -2,10 +2,16 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pymysql
 import bcrypt
+import os
+import subprocess
+import json
 
 #db setting needed: SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 app = Flask(__name__)
 CORS(app)
+
+UPLOAD_FOLDER = 'uploads/'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
@@ -161,7 +167,7 @@ def upload_match():
 
         # Insert or update data for each player
         for player in data["players"]:
-            if game == "rocket-league":
+            if game == "RL":
                 cursor.execute(
                     game_queries[game],
                     (
@@ -173,7 +179,7 @@ def upload_match():
                         data.get("game_number"), data.get("week")
                     )
                 )
-            elif game == "valorant":
+            elif game == "Val":
                 cursor.execute(
                     game_queries[game],
                     (
@@ -186,7 +192,7 @@ def upload_match():
                         data.get("game_num"), data.get("week")
                     )
                 )
-            elif game == "apex-legends":
+            elif game == "Apex":
                 cursor.execute(
                     game_queries[game],
                     (
@@ -205,6 +211,40 @@ def upload_match():
     finally:
         cursor.close()
         conn.close()
+
+# Upload File and Process OCR Endpoint
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(file_path)
+
+    try:
+        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/IconLoop.py")
+        process = subprocess.run(
+            ["python", ocr_script, file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        # Parse the JSON output from IconLoop.py
+        ocr_output = process.stdout.strip()
+        ocr_data = json.loads(ocr_output)  # Safely parse JSON
+
+        return jsonify(ocr_data)
+
+    except json.JSONDecodeError:
+        return jsonify({"error": "Failed to decode OCR output"}), 500
+    except subprocess.CalledProcessError as e:
+        print(f"OCR script error: {e.stderr}")
+        return jsonify({"error": "OCR processing failed"}), 500
 
 
 @app.route('/login', methods=['GET', 'POST'])

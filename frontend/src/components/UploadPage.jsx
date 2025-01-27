@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UploadPage = () => {
     const [file, setFile] = useState(null);
     const [game, setGame] = useState("");
     const [week, setWeek] = useState("");
     const [team, setTeam] = useState("");
+    const navigate = useNavigate();
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -22,11 +24,36 @@ const UploadPage = () => {
         event.preventDefault();
     };
 
-    const handleSubmit = () => {
-        // TODO: Add submission logic here
-        console.log({ file, game, week, team });
-        alert("Submitted successfully!");
-    };
+    const handleSubmit = async () => {
+        if (!file || !game || !week || !team) {
+          alert("Please fill all the fields and upload a file.");
+          return;
+        }
+    
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("game", game);
+        formData.append("week", week);
+        formData.append("team", team);
+    
+        try {
+          const response = await fetch("http://127.0.0.1:8080/upload_file", {
+            method: "POST",
+            body: formData,
+          });
+    
+          if (response.ok) {
+            const ocrData = await response.json();
+            navigate("/modify", { state: { ocrData } });
+          } else {
+            console.error("File upload failed.");
+            alert("Failed to process the file.");
+          }
+        } catch (error) {
+          console.error("Error uploading file:", error);
+          alert("An error occurred while uploading the file.");
+        }
+      };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
