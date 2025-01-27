@@ -19,7 +19,7 @@ pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract'
 for i in range(8):
     #                              ACS,   KDA,  Econ, FB,   P,   D
     players = defaultdict(lambda: ('0', '0/0/0', '0', '0', '0', '0'))
-    img_rgb = cv.imread(f'../Scoreboards/{i}.png')
+    img_rgb = cv.imread(f'backend/ocr/Valorant/Scoreboards/{i}.png')
 
     img_rgb = cv.resize(img_rgb, (1920, 1080))
     img_gray = cv.cvtColor(img_rgb, cv.COLOR_BGR2GRAY)
@@ -58,7 +58,7 @@ for i in range(8):
 
     #Perform template matching for each agent
     for agent in agents:
-        template = cv.imread(f'../ValAgents/{agent}.png', cv.IMREAD_GRAYSCALE)
+        template = cv.imread(f'backend/ocr/Valorant/ValAgents/{agent}.png', cv.IMREAD_GRAYSCALE)
         if template is None:
             print(f"Template for {agent} not found.")
             continue
@@ -297,7 +297,7 @@ for i in range(8):
 
 
     #Save result
-    output_path = f'../ValMatch/scoreboard_result{i}.png'
+    output_path = f'backend/ocr/Valorant/ValMatch/scoreboard_result{i}.png'
     #cv.imshow('Result', img_result)
     #cv.waitKey(0)
     cv.imwrite(output_path, img_result)
