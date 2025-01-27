@@ -15,7 +15,34 @@ const ModifyPage = () => {
     players: {},
   };
 
-  const [formData, setFormData] = useState(initialData);
+  const mockData = {
+    game: "RL",
+    week: "1",
+    school: "Colorado College",
+    opponent: "Stanford",
+    players: [
+      {
+        school: "Colorado College",
+        playerName: "Jimmy Andrews",
+        score: 400,
+        goals: 2,
+        assists: 1,
+        saves: 3,
+        shots: 5,
+      },
+      {
+        school: "Stanford",
+        playerName: "Chris Taylor",
+        score: 350,
+        goals: 2,
+        assists: 1,
+        saves: 2,
+        shots: 4,
+      },
+    ],
+  };
+
+  const [formData, setFormData] = useState(mockData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -129,7 +156,7 @@ const ModifyPage = () => {
             key={index}
             className="mb-6 border p-4 rounded-lg bg-white shadow"
           >
-            <h3 className="font-bold mb-2">Player: {playerName}</h3>
+            <h3 className="font-bold mb-2">Player: {stats.playerName}</h3>
             {Object.entries(stats).map(([key, value]) => (
               <div key={key} className="mb-2">
                 <label className="block text-sm font-medium capitalize">{key}</label>
