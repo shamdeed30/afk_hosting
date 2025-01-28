@@ -186,7 +186,7 @@ final_detections = sorted(final_detections, key=lambda x: x[2][1])
 #cv.imshow(f'OCR MAP NAME', img_map)
 #cv.waitKey(0)
 ocr_map = pytesseract.image_to_string(img_map, config='--psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-print(f"Map: {ocr_map.strip()}")
+#print(f"Map: {ocr_map.strip()}")
 
 
 for score, agent, top_left, (w, h) in final_detections:
@@ -281,7 +281,7 @@ for score, agent, top_left, (w, h) in final_detections:
     ocr_fb = pytesseract.image_to_string(strip_fb, config=config1)
     ocr_p = pytesseract.image_to_string(strip_p, config=config1)
     ocr_d = pytesseract.image_to_string(strip_d, config=config1)
-    print(f"OCR Stats for {ocr_name.split(' ')[0]} on {agent}: {ocr_acs.strip()}, {ocr_kda.strip()}, {ocr_econ.strip()}, {ocr_fb.strip()}, {ocr_p.strip()}, {ocr_d.strip()}")
+    #print(f"OCR Stats for {ocr_name.split(' ')[0]} on {agent}: {ocr_acs.strip()}, {ocr_kda.strip()}, {ocr_econ.strip()}, {ocr_fb.strip()}, {ocr_p.strip()}, {ocr_d.strip()}")
     #Update player stats, using 0 if not found
     _, current_acs, current_kda, current_econ, current_fb, current_p, current_d = players[ocr_name.split(' ')[0]]
     if ocr_acs.strip():
@@ -360,7 +360,6 @@ with open(json_output_path, 'w') as json_file:
 print(f'Players dict: {str(players)}')
 print(f'Map: {ocr_map}')
 print(f'JSON saved to: {json_output_path}')
-
 #Print results
 #print(f"Top 10 detections for scoreboard {i}:")
 #for i, (score, agent, top_left, _) in enumerate(final_detections, 1):

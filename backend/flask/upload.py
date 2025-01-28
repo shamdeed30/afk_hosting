@@ -1,5 +1,7 @@
+import re
 from flask import Blueprint, jsonify, request
 import pymysql
+# from ocr.Valorant.ValMatch import process_val_ocr
 from db import get_db_connection
 import os
 import subprocess
@@ -30,22 +32,20 @@ def upload_file():
 
     try:
         # Define the OCR script path
-        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/ValOCR.py")
+        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/ValOCRMain.py")
 
         # Run the OCR script
-        subprocess.run(
+        process = subprocess.run(
             ["python", ocr_script, "-f", file_path],
+            capture_output=True,
+            text=True,
             check=True
         )
 
-        # Construct the JSON file path based on your directory structure
-        json_file_path = f'JSON/players_uploads/{file.filename.replace(".png","")}.json'
-
-
-        # Load the JSON data from the file
-        with open(json_file_path, 'r') as json_file:
-            ocr_data = json.load(json_file)
-
+        # Load the OCR data
+        ocr_data = json.loads(process.stdout)
+        
+        
         # Format the output to include all required attributes
         formatted_data = {
             "game": game,  # Assuming the game is Valorant for this OCR
@@ -55,9 +55,8 @@ def upload_file():
             "map": ocr_data.get("map", ""),
             "players": ocr_data.get("players", []),
         }
-        print(formatted_data)
 
-        return jsonify(formatted_data)
+        return jsonify(formatted_data), 200
 
     except FileNotFoundError:
         return jsonify({"error": "OCR output file not found"}), 500
