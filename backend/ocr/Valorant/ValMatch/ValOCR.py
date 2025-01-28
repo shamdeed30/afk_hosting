@@ -77,7 +77,7 @@ roi_gray = cv.Canny(roi_gray, 50, 150)
 
 #Perform template matching for each agent
 for agent in agents:
-    template = cv.imread(f'/Users/mustafasameen/Documents/senior-capstone-project/backend/ocr/Valorant/ValAgents/{agent}.png', cv.IMREAD_GRAYSCALE)
+    template = cv.imread(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ValAgents', f'{agent}.png'), cv.IMREAD_GRAYSCALE)
     if template is None:
         print(f"Template for {agent} not found.")
         continue
@@ -317,7 +317,7 @@ for score, agent, top_left, (w, h) in final_detections:
 
 
 #Save result
-output_path = f'/Users/mustafasameen/Documents/senior-capstone-project/backend/ocr/Valorant/ValMatch/scoreboard_result{args.filename}'
+output_path = f'scoreboard_result{args.filename}'
 #cv.imshow('Result', img_result)
 #cv.waitKey(0)
 

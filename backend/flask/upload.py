@@ -13,6 +13,11 @@ def upload_file():
         return jsonify({"error": "No file part"}), 400
 
     file = request.files['file']
+    school = request.form.get('school')
+    opponent_school = request.form.get('opponent_school')
+    week = request.form.get('week')
+    game = request.form.get('game')
+
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
@@ -34,20 +39,19 @@ def upload_file():
         )
 
         # Construct the JSON file path based on your directory structure
-        json_file_path = f'/Users/mustafasameen/Documents/senior-capstone-project/backend/flask/JSON/players_uploads/{file.filename.replace(".png","")}.json'
+        json_file_path = f'JSON/players_uploads/{file.filename.replace(".png","")}.json'
 
 
         # Load the JSON data from the file
         with open(json_file_path, 'r') as json_file:
             ocr_data = json.load(json_file)
-            print("Hey im here")
 
         # Format the output to include all required attributes
         formatted_data = {
-            "game": "valorant",  # Assuming the game is Valorant for this OCR
-            "week": "",  # Week will need to be added manually in the ModifyPage
-            "school": "",  # School will need to be added manually in the ModifyPage
-            "opponent": "",  # Opponent will need to be added manually in the ModifyPage
+            "game": game,  # Assuming the game is Valorant for this OCR
+            "week": week,  # Week will need to be added manually in the ModifyPage
+            "school": school,  # School will need to be added manually in the ModifyPage
+            "opponent_school": opponent_school,  # Opponent will need to be added manually in the ModifyPage
             "map": ocr_data.get("map", ""),
             "players": ocr_data.get("players", []),
         }

@@ -91,9 +91,9 @@ const ModifyPage = () => {
           value={formData.week}
           onChange={(e) => handleDropdownChange(e, "week")}
         >
-          <option value="1">Week 1</option>
-          <option value="2">Week 2</option>
-          <option value="3">Week 3</option>
+          <option value="week-1">Week 1</option>
+          <option value="week-2">Week 2</option>
+          <option value="week- 3">Week 3</option>
         </select>
 
         <label className="block mb-2 font-medium">Map</label>
@@ -115,7 +115,7 @@ const ModifyPage = () => {
         <label className="block mb-2 font-medium">Opponent</label>
         <input
           type="text"
-          value={formData.opponent}
+          value={formData.opponent_school}
           className="p-2 border border-gray-300 rounded-lg w-full mb-4"
           readOnly
         />

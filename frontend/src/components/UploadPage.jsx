@@ -5,7 +5,8 @@ const UploadPage = () => {
     const [file, setFile] = useState(null);
     const [game, setGame] = useState("");
     const [week, setWeek] = useState("");
-    const [team, setTeam] = useState("");
+    const [school, setSchool] = useState("");
+    const [opponent_school, setOpponentSchool] = useState("");
     const navigate = useNavigate();
 
   const handleFileChange = (event) => {
@@ -25,7 +26,7 @@ const UploadPage = () => {
   };
 
     const handleSubmit = async () => {
-        if (!file || !game || !week || !team) {
+        if (!file || !game || !week || !school || !opponent_school) {
           alert("Please fill all the fields and upload a file.");
           return;
         }
@@ -34,7 +35,8 @@ const UploadPage = () => {
         formData.append("file", file);
         formData.append("game", game);
         formData.append("week", week);
-        formData.append("team", team);
+        formData.append("school", school);
+        formData.append("opponent_school", opponent_school);
     
         try {
           const response = await fetch("http://127.0.0.1:8080/upload_file", {
@@ -116,14 +118,26 @@ const UploadPage = () => {
 
         <select
           className="rounded-lg border border-gray-300 p-4"
-          value={team}
-          onChange={(e) => setTeam(e.target.value)}
+          value={school}
+          onChange={(e) => setSchool(e.target.value)}
         >
-          <option value="">Select Team</option>
-          <option value="team-a">Team A</option>
-          <option value="team-b">Team B</option>
-          <option value="team-c">Team C</option>
+          <option value="">Select School</option>
+          <option value="school-a">School A</option>
+          <option value="school-b">School B</option>
+          <option value="school-c">School C</option>
         </select>
+
+        <select
+          className="rounded-lg border border-gray-300 p-4"
+          value={opponent_school}
+          onChange={(e) => setOpponentSchool(e.target.value)}
+        >
+          <option value="">Select Opponent School</option>
+          <option value="school-a">School A</option>
+          <option value="school-b">School B</option>
+          <option value="school-c">School C</option>
+        </select>
+
       </div>
 
       <button
