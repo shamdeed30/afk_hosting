@@ -58,6 +58,17 @@ const UploadPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
       <h1 className="mb-8 text-4xl font-bold">Upload Game</h1>
+
+      <div className="mb-8 w-3/4">
+        <h2 className="text-2xl font-semibold">Upload Requirements:</h2>
+        <ul className="list-disc pl-5">
+          <li>1920 x 1080 resolution</li>
+          <li>16:9 aspect ratio</li>
+          <li>No overlays (Discord, Outplayed, etc.)</li>
+          <li>Winning Team is responsible for uploading screenshots</li>
+        </ul>
+      </div>
+      
       <div
         className="flex h-64 w-3/4 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-400 bg-white p-4 hover:shadow-lg"
         onDrop={handleDrop}

@@ -9,10 +9,9 @@ const ModifyPage = () => {
   const initialData = location.state?.ocrData || {
     game: "",
     week: "",
-    school: "",
-    opponent: "",
+    team: "",
     map: "",
-    players: {},
+    players: [],
   };
 
   const [formData, setFormData] = useState(initialData);
@@ -20,9 +19,9 @@ const ModifyPage = () => {
   const [error, setError] = useState("");
 
   // Update handler for editable fields
-  const handleInputChange = (event, playerName, key) => {
-    const updatedPlayers = { ...formData.players };
-    updatedPlayers[playerName][key] = event.target.value;
+  const handleInputChange = (event, index, key) => {
+    const updatedPlayers = [...formData.players];
+    updatedPlayers[index][key] = event.target.value;
     setFormData({ ...formData, players: updatedPlayers });
   };
 
@@ -59,7 +58,7 @@ const ModifyPage = () => {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (!formData || !formData.players || Object.keys(formData.players).length === 0)
+  if (!formData || !formData.players || formData.players.length === 0)
     return <p>No data available. Please upload data first.</p>;
 
   return (
@@ -124,21 +123,21 @@ const ModifyPage = () => {
 
       {/* Editable Player Data */}
       <div className="w-3/4">
-        {Object.entries(formData.players).map(([playerName, stats], index) => (
+        {formData.players.map((player, index) => (
           <div
             key={index}
             className="mb-6 border p-4 rounded-lg bg-white shadow"
           >
-            <h3 className="font-bold mb-2">Player: {playerName}</h3>
-            {Object.entries(stats).map(([key, value]) => (
+            <h3 className="font-bold mb-2">Player: {player.name}</h3>
+            {Object.entries(player).map(([key, value]) => (
               <div key={key} className="mb-2">
                 <label className="block text-sm font-medium capitalize">{key}</label>
                 <input
                   type="text"
                   value={value}
-                  onChange={(e) => handleInputChange(e, playerName, key)}
+                  onChange={(e) => handleInputChange(e, index, key)}
                   className="border p-2 w-full"
-                  readOnly={["agent", "map"].includes(key)} // Adjust based on which fields are editable
+                  readOnly={["name", "agent", "map"].includes(key)} // Adjust based on which fields are editable
                 />
               </div>
             ))}
