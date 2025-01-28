@@ -7,6 +7,7 @@ const UploadPage = () => {
     const [week, setWeek] = useState("");
     const [school, setSchool] = useState("");
     const [opponent_school, setOpponentSchool] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
   const handleFileChange = (event) => {
@@ -37,6 +38,8 @@ const UploadPage = () => {
         formData.append("week", week);
         formData.append("school", school);
         formData.append("opponent_school", opponent_school);
+
+        setLoading(true); //Start the loading animation
     
         try {
           const response = await fetch("http://127.0.0.1:8080/upload_file", {
@@ -54,6 +57,8 @@ const UploadPage = () => {
         } catch (error) {
           console.error("Error uploading file:", error);
           alert("An error occurred while uploading the file.");
+        } finally {
+          setLoading(false); //Stop the loading animation
         }
       };
 
@@ -141,11 +146,21 @@ const UploadPage = () => {
       </div>
 
       <button
-        className="mt-8 rounded-lg bg-blue-500 px-6 py-3 text-white transition hover:bg-blue-600"
+        className={`mt-8 rounded-lg px-6 py-3 text-white transition ${
+          loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+        }`}
         onClick={handleSubmit}
+        disabled={loading} // Disable the button while loading
       >
-        Submit
+        {loading ? "Processing..." : "Submit"}
       </button>
+
+      {loading && (
+        <div className="mt-8 flex flex-col items-center justify-center">
+          <div className="loader border-t-4 border-blue-500 border-solid rounded-full w-16 h-16 animate-spin"></div>
+          <p className="text-blue-500 mt-4">Processing OCR...</p>
+        </div>
+      )}
     </div>
   );
 };
