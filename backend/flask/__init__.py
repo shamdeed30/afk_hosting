@@ -237,13 +237,12 @@ def upload_file():
         )
 
         # Construct the JSON file path based on your directory structure
-        json_file_path = f'/Users/mustafasameen/Documents/senior-capstone-project/backend/flask/JSON/players_uploads/{file.filename.replace(".png","")}.json'
+        json_file_path = f'JSON/players_uploads/{file.filename.replace(".png","")}.json'
 
 
         # Load the JSON data from the file
         with open(json_file_path, 'r') as json_file:
             ocr_data = json.load(json_file)
-            print("Hey im here")
 
         # Format the output to include all required attributes
         formatted_data = {
