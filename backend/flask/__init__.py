@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pymysql
@@ -212,7 +213,6 @@ def upload_match():
         cursor.close()
         conn.close()
 
-# Upload File and Process OCR Endpoint
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -222,24 +222,44 @@ def upload_file():
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
+    # Save the uploaded file
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(file_path)
 
     try:
-        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/IconLoop.py")
-        process = subprocess.run(
-            ["python", ocr_script, file_path],
-            capture_output=True,
-            text=True,
+        # Define the OCR script path
+        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/ValOCR.py")
+
+        # Run the OCR script
+        subprocess.run(
+            ["python", ocr_script, "-f", file_path],
             check=True
         )
 
-        # Parse the JSON output from IconLoop.py
-        ocr_output = process.stdout.strip()
-        ocr_data = json.loads(ocr_output)  # Safely parse JSON
+        # Construct the JSON file path based on your directory structure
+        json_file_path = f'/Users/mustafasameen/Documents/senior-capstone-project/backend/flask/JSON/players_uploads/{file.filename.replace(".png","")}.json'
 
-        return jsonify(ocr_data)
 
+        # Load the JSON data from the file
+        with open(json_file_path, 'r') as json_file:
+            ocr_data = json.load(json_file)
+            print("Hey im here")
+
+        # Format the output to include all required attributes
+        formatted_data = {
+            "game": "valorant",  # Assuming the game is Valorant for this OCR
+            "week": "",  # Week will need to be added manually in the ModifyPage
+            "school": "",  # School will need to be added manually in the ModifyPage
+            "opponent": "",  # Opponent will need to be added manually in the ModifyPage
+            "map": ocr_data.get("map", ""),
+            "players": ocr_data.get("players", []),
+        }
+        print(formatted_data)
+
+        return jsonify(formatted_data)
+
+    except FileNotFoundError:
+        return jsonify({"error": "OCR output file not found"}), 500
     except json.JSONDecodeError:
         return jsonify({"error": "Failed to decode OCR output"}), 500
     except subprocess.CalledProcessError as e:
