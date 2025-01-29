@@ -13,7 +13,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex min-h-dvh justify-center">
       {loggedIn ? (
         <div className="flex flex-col items-center p-8">
           <h1 className="p-12 text-4xl font-bold">Profile Page</h1>

@@ -7,6 +7,7 @@ import RankingPage from "./components/RankingPage";
 import ProfilePage from "./components/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ModifyPage from "./components/ModifyPage";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/ranking" element={<RankingPage />} />
+        <Route path="/rankings" element={<RankingPage />} />
         <Route
           path="/upload"
           element={<ProtectedRoute page={<UploadPage />} />}
@@ -26,6 +27,8 @@ function App() {
         />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
+
+      <Footer />
     </div>
   );
 }
