@@ -1,36 +1,24 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ModifyPage = () => {
-  // Mock data for testing the form
-  const mockData = {
-    game: "RL",
-    week: "1",
-    school: "Colorado College",
-    opponent: "Stanford",
-    players: [
-      {
-        school: "Colorado College",
-        playerName: "Jimmy Andrews",
-        score: 400,
-        goals: 2,
-        assists: 1,
-        saves: 3,
-        shots: 5,
-      },
-      {
-        school: "Stanford",
-        playerName: "Chris Taylor",
-        score: 350,
-        goals: 2,
-        assists: 1,
-        saves: 2,
-        shots: 4,
-      },
-    ],
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Accept OCR data passed from UploadPage or set default empty structure
+  const initialData = location.state?.ocrData || {
+    game: "",
+    week: "",
+    team: "",
+    map: "",
+    code: "",
+    squad_placed: "",
+    players: [],
   };
 
-  // Initialize state with mock data
-  const [formData, setFormData] = useState(mockData);
+  const [formData, setFormData] = useState(initialData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Update handler for editable fields
   const handleInputChange = (event, index, key) => {
@@ -44,30 +32,46 @@ const ModifyPage = () => {
     setFormData({ ...formData, [key]: event.target.value });
   };
 
+  // Handle submission of the updated data to the backend
   const handleSubmit = async () => {
+    setLoading(true);
+    setError("");
+
     try {
-      const response = await fetch(`http://localhost:8080/upload_match`, {
+      const response = await fetch("http://127.0.0.1:8080/upload_match", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       if (response.ok) {
         alert("Data submitted successfully!");
+        navigate("/"); // Navigate back to home or another page after successful submission
       } else {
-        alert("Failed to submit data.");
-        console.error("Submission error:", await response.json());
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to submit data.");
       }
-    } catch (error) {
-      console.error("Error submitting data:", error);
-      alert("Failed to submit data.");
+    } catch (err) {
+      console.error("Error submitting data:", err);
+      setError("An error occurred while submitting the data.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!formData) return <p>Loading match data...</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!formData || !formData.players || formData.players.length === 0)
+    return <p>No data available. Please upload data first.</p>;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
       <h1 className="mb-8 text-4xl font-bold">Modify Game Data</h1>
+      {/* Display errors, if any */}
+      {error && (
+        <div className="mb-6 w-3/4 rounded bg-red-100 p-4 text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* Editable Match Info */}
       <div className="mb-8 w-3/4">
@@ -77,9 +81,9 @@ const ModifyPage = () => {
           value={formData.game}
           onChange={(e) => handleDropdownChange(e, "game")}
         >
-          <option value="RL">Rocket League</option>
-          <option value="Val">Valorant</option>
-          <option value="Apex">Apex Legends</option>
+          <option value="rocket-league">Rocket League</option>
+          <option value="valorant">Valorant</option>
+          <option value="apex-legends">Apex Legends</option>
         </select>
 
         <label className="mb-2 block font-medium">Week</label>
@@ -88,10 +92,46 @@ const ModifyPage = () => {
           value={formData.week}
           onChange={(e) => handleDropdownChange(e, "week")}
         >
-          <option value="1">Week 1</option>
-          <option value="2">Week 2</option>
-          <option value="3">Week 3</option>
+          <option value="week-1">Week 1</option>
+          <option value="week-2">Week 2</option>
+          <option value="week- 3">Week 3</option>
         </select>
+
+        {formData.game === "valorant" ? (
+          <div>
+            <label className="mb-2 block font-medium">Map</label>
+            <input
+              type="text"
+              value={formData.map}
+              className="mb-4 w-full rounded-lg border border-gray-300 p-2"
+              readOnly
+            />
+          </div>
+        ) : null}
+
+        {formData.game === "apex-legends" ? (
+          <div>
+            <label className="mb-2 block font-medium">Code</label>
+            <input
+              type="text"
+              value={formData.code}
+              className="mb-4 w-full rounded-lg border border-gray-300 p-2"
+              readOnly
+            />
+          </div>
+        ) : null}
+
+        {formData.game === "apex-legends" ? (
+          <div>
+            <label className="mb-2 block font-medium">Squad Placement</label>
+            <input
+              type="text"
+              value={formData.squad_placed}
+              className="mb-4 w-full rounded-lg border border-gray-300 p-2"
+              readOnly
+            />
+          </div>
+        ) : null}
 
         <label className="mb-2 block font-medium">School</label>
         <input
@@ -104,7 +144,7 @@ const ModifyPage = () => {
         <label className="mb-2 block font-medium">Opponent</label>
         <input
           type="text"
-          value={formData.opponent}
+          value={formData.opponent_school}
           className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           readOnly
         />
@@ -112,39 +152,35 @@ const ModifyPage = () => {
 
       {/* Editable Player Data */}
       <div className="w-3/4">
-        {formData.players.length > 0 ? (
-          formData.players.map((player, index) => (
-            <div
-              key={index}
-              className="mb-6 rounded-lg border bg-white p-4 shadow"
-            >
-              <h3 className="mb-2 font-bold">Player: {player.playerName}</h3>
-              {Object.entries(player).map(([key, value]) => (
-                <div key={key} className="mb-2">
-                  <label className="block text-sm font-medium capitalize">
-                    {key}
-                  </label>
-                  <input
-                    type="text"
-                    value={value}
-                    onChange={(e) => handleInputChange(e, index, key)}
-                    className="w-full border p-2"
-                    readOnly={key === "playerName" || key === "school"}
-                  />
-                </div>
-              ))}
-            </div>
-          ))
-        ) : (
-          <p>No player data available.</p>
-        )}
+        {formData.players.map((player, index) => (
+          <div
+            key={index}
+            className="mb-6 rounded-lg border bg-white p-4 shadow"
+          >
+            <h3 className="mb-2 font-bold">Player: {player.name}</h3>
+            {Object.entries(player).map(([key, value]) => (
+              <div key={key} className="mb-2">
+                <label className="block text-sm font-medium capitalize">
+                  {key}
+                </label>
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => handleInputChange(e, index, key)}
+                  className="w-full border p-2"
+                  readOnly={["name", "agent", "map"].includes(key)} // Adjust based on which fields are editable
+                />
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
       <button
         className="mt-8 rounded-lg bg-green-500 px-6 py-3 text-white transition hover:bg-green-600"
         onClick={handleSubmit}
       >
-        Submit
+        {loading ? "Submitting..." : "Submit"}
       </button>
     </div>
   );
