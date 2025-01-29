@@ -11,6 +11,8 @@ const ModifyPage = () => {
     week: "",
     team: "",
     map: "",
+    code: "",
+    squad_placed: "",
     players: [],
   };
 
@@ -62,21 +64,21 @@ const ModifyPage = () => {
     return <p>No data available. Please upload data first.</p>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-4xl font-bold mb-8">Modify Game Data</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
+      <h1 className="mb-8 text-4xl font-bold">Modify Game Data</h1>
 
       {/* Display errors, if any */}
       {error && (
-        <div className="mb-6 w-3/4 bg-red-100 text-red-700 p-4 rounded">
+        <div className="mb-6 w-3/4 rounded bg-red-100 p-4 text-red-700">
           {error}
         </div>
       )}
 
       {/* Editable Match Info */}
-      <div className="w-3/4 mb-8">
-        <label className="block mb-2 font-medium">Game</label>
+      <div className="mb-8 w-3/4">
+        <label className="mb-2 block font-medium">Game</label>
         <select
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           value={formData.game}
           onChange={(e) => handleDropdownChange(e, "game")}
         >
@@ -85,9 +87,9 @@ const ModifyPage = () => {
           <option value="apex-legends">Apex Legends</option>
         </select>
 
-        <label className="block mb-2 font-medium">Week</label>
+        <label className="mb-2 block font-medium">Week</label>
         <select
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           value={formData.week}
           onChange={(e) => handleDropdownChange(e, "week")}
         >
@@ -96,27 +98,55 @@ const ModifyPage = () => {
           <option value="week- 3">Week 3</option>
         </select>
 
-        <label className="block mb-2 font-medium">Map</label>
-        <input
-          type="text"
-          value={formData.map}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
-          readOnly
-        />
+        {formData.game === "valorant" ? (
+          <div>
+            <label className="mb-2 block font-medium">Map</label>
+            <input
+              type="text"
+              value={formData.map}
+              className="mb-4 w-full rounded-lg border border-gray-300 p-2"
+              readOnly
+            />
+          </div>
+        ) : null}
 
-        <label className="block mb-2 font-medium">School</label>
+        {formData.game === "apex-legends" ? (
+          <div>
+            <label className="mb-2 block font-medium">Code</label>
+            <input
+              type="text"
+              value={formData.code}
+              className="mb-4 w-full rounded-lg border border-gray-300 p-2"
+              readOnly
+            />
+          </div>
+        ) : null}
+
+        {formData.game === "apex-legends" ? (
+          <div>
+            <label className="mb-2 block font-medium">Squad Placement</label>
+            <input
+              type="text"
+              value={formData.squad_placed}
+              className="mb-4 w-full rounded-lg border border-gray-300 p-2"
+              readOnly
+            />
+          </div>
+        ) : null}
+
+        <label className="mb-2 block font-medium">School</label>
         <input
           type="text"
           value={formData.school}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           readOnly
         />
 
-        <label className="block mb-2 font-medium">Opponent</label>
+        <label className="mb-2 block font-medium">Opponent</label>
         <input
           type="text"
           value={formData.opponent_school}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="mb-4 w-full rounded-lg border border-gray-300 p-2"
           readOnly
         />
       </div>
@@ -126,17 +156,19 @@ const ModifyPage = () => {
         {formData.players.map((player, index) => (
           <div
             key={index}
-            className="mb-6 border p-4 rounded-lg bg-white shadow"
+            className="mb-6 rounded-lg border bg-white p-4 shadow"
           >
-            <h3 className="font-bold mb-2">Player: {player.name}</h3>
+            <h3 className="mb-2 font-bold">Player: {player.name}</h3>
             {Object.entries(player).map(([key, value]) => (
               <div key={key} className="mb-2">
-                <label className="block text-sm font-medium capitalize">{key}</label>
+                <label className="block text-sm font-medium capitalize">
+                  {key}
+                </label>
                 <input
                   type="text"
                   value={value}
                   onChange={(e) => handleInputChange(e, index, key)}
-                  className="border p-2 w-full"
+                  className="w-full border p-2"
                   readOnly={["name", "agent", "map"].includes(key)} // Adjust based on which fields are editable
                 />
               </div>
@@ -146,7 +178,7 @@ const ModifyPage = () => {
       </div>
 
       <button
-        className="mt-8 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
+        className="mt-8 rounded-lg bg-green-500 px-6 py-3 text-white transition hover:bg-green-600"
         onClick={handleSubmit}
       >
         {loading ? "Submitting..." : "Submit"}

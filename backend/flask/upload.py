@@ -11,6 +11,10 @@ upload_bp = Blueprint('upload', __name__)
 
 @upload_bp.route('/upload_file', methods=['POST'])
 def upload_file():
+    ocr_scripts = {
+        'valorant': "../ocr/Valorant/ValMatch/ValOCRMain.py",
+        'apex-legends': "../ocr/Apex/ApexFuncs.py",
+    }
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
@@ -31,10 +35,13 @@ def upload_file():
     file.save(file_path)
 
     try:
-        # Define the OCR script path
-        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/ValOCRMain.py")
+        if game not in ocr_scripts:
+            return jsonify({"error": f"OCR not supported for game: {game}"}), 400
 
-        # Run the OCR script
+        # Define the OCR script path
+        ocr_script = os.path.join(os.path.dirname(__file__), ocr_scripts[game])
+
+        # Run the OCR script and capture JSON output
         process = subprocess.run(
             ["python", ocr_script, "-f", file_path],
             capture_output=True,
@@ -42,8 +49,9 @@ def upload_file():
             check=True
         )
 
-        # Load the OCR data
-        ocr_data = json.loads(process.stdout)
+        # Extract JSON output from stdout
+        ocr_output = process.stdout.strip()
+        ocr_data = json.loads(ocr_output)
         
         
         # Format the output to include all required attributes
@@ -53,6 +61,8 @@ def upload_file():
             "school": school,  # School will need to be added manually in the ModifyPage
             "opponent_school": opponent_school,  # Opponent will need to be added manually in the ModifyPage
             "map": ocr_data.get("map", ""),
+            "code": ocr_data.get("code", ""),
+            "squad_placed": ocr_data.get("squad_placed", ""),
             "players": ocr_data.get("players", []),
         }
 
