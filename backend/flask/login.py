@@ -1,11 +1,9 @@
 from flask import Blueprint, jsonify, request
 import pymysql
-from db import get_db_connection
 import bcrypt
+from db import get_db_connection
 
 login_bp = Blueprint('login', __name__)
-
-
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
     conn = get_db_connection()
@@ -16,20 +14,16 @@ def login():
     password = data.get('password')
 
     try: 
-        # get row that matches username
         cursor.execute( 
-            "SELECT * from Admins WHERE username = %s", (username,)
+            "SELECT * from Users WHERE username = %s", (username,)
         )
 
         user = cursor.fetchone()
 
-        # DONT DELETE: It's for hashing passwords to store in the db for admin accounts
-        # print(bcrypt.hashpw('jca2CC66.'.encode('utf-8'), bcrypt.gensalt()))
-
         if user: 
-            # hash the password given by user and compare
             if bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')): 
-                return jsonify({"message": "Success"}, 200)
+                return jsonify({"username": user["username"], "isAdmin": bool(user["is_admin"])}, 200)
+
             else: 
                 return jsonify({"error": "Invalid credentials"}), 401
         else: 
@@ -42,4 +36,3 @@ def login():
     finally: 
         cursor.close()
         conn.close()
-

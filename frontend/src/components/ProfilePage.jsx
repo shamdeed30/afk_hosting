@@ -1,34 +1,37 @@
 import React, { useRef } from "react";
 import { useAuth } from "./AuthContext";
+import ManageAccounts from "./ManageAccounts";
 
 const ProfilePage = () => {
   const usernameInput = useRef();
   const passwordInput = useRef();
 
-  const { username, loggedIn, login, logout } = useAuth();
+  const { username, loggedIn, isAdmin, login, logout } = useAuth();
 
   const handleLogin = () => {
     login(usernameInput.current.value, passwordInput.current.value);
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex min-h-dvh justify-center">
       {loggedIn ? (
         <div className="flex flex-col items-center p-8">
-          <h2 className="p-8 text-2xl font-bold">Username:</h2>
-          <h3 className="p-8 text-xl"> {username} </h3>
+          <h1 className="p-12 text-4xl font-bold">Profile Page</h1>
+          <h2 className="p-8 text-2xl font-bold"> {username} </h2>
           <button
-            className="rounded-lg border bg-blue-500 p-4 text-white"
+            className="rounded-lg border bg-blue-500 p-2 text-white"
             onClick={logout}
           >
             Logout
           </button>
           <a
             href="mailto:p_hour@coloradocollege.edu"
-            className="text-xl text-black"
+            className="m-8 text-xl text-black"
           >
             Forgot Password
           </a>
+
+          {isAdmin ? <ManageAccounts /> : null}
         </div>
       ) : (
         <div className="flex flex-col items-center p-8">

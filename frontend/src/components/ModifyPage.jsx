@@ -66,7 +66,6 @@ const ModifyPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
       <h1 className="mb-8 text-4xl font-bold">Modify Game Data</h1>
-
       {/* Display errors, if any */}
       {error && (
         <div className="mb-6 w-3/4 rounded bg-red-100 p-4 text-red-700">

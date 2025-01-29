@@ -101,4 +101,3 @@ def accounts():
             conn.commit()
             cursor.close()
             conn.close()
-        

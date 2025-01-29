@@ -1,7 +1,6 @@
 import re
 from flask import Blueprint, jsonify, request
 import pymysql
-# from ocr.Valorant.ValMatch import process_val_ocr
 from db import get_db_connection
 import os
 import subprocess
@@ -76,11 +75,11 @@ def upload_file():
         print(f"OCR script error: {e.stderr}")
         return jsonify({"error": "OCR processing failed"}), 500
 
-
 # Upload new match data (or update existing)
 @upload_bp.route('/upload_match', methods=['POST'])
 def upload_match():
     conn = get_db_connection()
+    # cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor = conn.cursor()
 
     data = request.json  # JSON data from frontend
