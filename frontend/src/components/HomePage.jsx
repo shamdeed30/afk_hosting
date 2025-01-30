@@ -109,7 +109,7 @@ const HomePage = () => {
               <option value="7">Averages</option>
             </select>
 
-            <div className="relative w-full">
+            <div className="relative w-full text-black">
               <input
                 type="text"
                 placeholder="Find a player's stats by name"

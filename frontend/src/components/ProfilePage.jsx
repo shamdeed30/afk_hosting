@@ -10,10 +10,6 @@ const ProfilePage = () => {
 
   const { username, loggedIn, isAdmin, login, logout } = useAuth();
 
-  const handleLogin = () => {
-    login(usernameInput.current.value, passwordInput.current.value);
-  };
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -74,7 +70,9 @@ const ProfilePage = () => {
           </div>
           <button
             className="m-8 bg-custom-off-white px-8 py-2 font-bold text-black hover:bg-custom-gold"
-            onClick={handleLogin}
+            onClick={() =>
+              login(usernameInput.current.value, passwordInput.current.value)
+            }
           >
             Enter
           </button>

@@ -37,7 +37,7 @@ const NavigationPage = ({ setHamburgerMenu }) => {
           >
             Upload
           </Link>
-          <MdLock className="h-auto w-12" />
+          {loggedIn ? null : <MdLock className="h-auto w-12" />}
         </div>
 
         <div className="flex p-8 text-custom-off-white hover:text-custom-gold">
@@ -48,7 +48,7 @@ const NavigationPage = ({ setHamburgerMenu }) => {
           >
             Modify
           </Link>
-          <MdLock className="h-auto w-12" />
+          {loggedIn ? null : <MdLock className="h-auto w-12" />}
         </div>
       </div>
     </div>

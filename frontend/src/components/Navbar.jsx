@@ -25,7 +25,7 @@ const DesktopNavbar = () => {
           toggle={setHamburgerMenu}
         />
         <Link to="/profile">
-          <CgProfile className="h-auto w-8 text-custom-off-white" />
+          <CgProfile className="h-auto w-16 p-4 text-custom-off-white" />
         </Link>
       </div>
 
