@@ -4,7 +4,7 @@ const GameCard = (props) => {
   const { match, teamStats, opponentStats } = props;
 
   return (
-    <div className="font-lato text-custom-off-white w-full p-8">
+    <div className="w-full p-8 font-lato text-custom-off-white">
       <h3 className="p-4 text-center text-2xl font-bold text-white">
         {match.school +
           " " +
@@ -21,7 +21,7 @@ const GameCard = (props) => {
             {Object.keys(teamStats[0]).map((header, index) => (
               <th
                 key={index}
-                className="border-custom-off-white bg-custom-gray border-b p-4"
+                className="border-b border-custom-off-white bg-custom-gray p-4"
               >
                 {header.toUpperCase()}
               </th>
@@ -35,7 +35,7 @@ const GameCard = (props) => {
               {Object.values(player).map((stat, i) => (
                 <td
                   key={`team-${index}-stat-${i}`}
-                  className={`${index % 2 === 0 ? "bg-custom-light-gray" : "bg-custom-gray"} border-custom-off-white border-y p-4`}
+                  className={`${index % 2 === 0 ? "bg-custom-light-gray" : "bg-custom-gray"} border-y border-custom-off-white p-4`}
                 >
                   {stat}
                 </td>
@@ -48,7 +48,7 @@ const GameCard = (props) => {
               {Object.values(player).map((stat, i) => (
                 <td
                   key={`opponent-${index}-stat-${i}`}
-                  className={`${index % 2 === 0 ? "bg-custom-gray" : "bg-custom-light-gray"} border-custom-off-white border-y p-4`}
+                  className={`${index % 2 === 0 ? "bg-custom-gray" : "bg-custom-light-gray"} border-y border-custom-off-white p-4`}
                 >
                   {stat}
                 </td>

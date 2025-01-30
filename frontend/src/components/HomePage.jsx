@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import GameCard from "./GameCard";
+import PlayerReport from "./PlayerReport";
 import { IoSearch } from "react-icons/io5";
 
 const HomePage = () => {
   const [game, setGame] = useState("RL");
   const [week, setWeek] = useState("1");
   const [gameReports, setGameReports] = useState([]);
-  const [playerStats, setPlayerStats] = useState([]);
+  const [playerReports, setPlayerReports] = useState([]);
   const searchInput = useRef();
 
   const handleGameChange = (event) => {
@@ -17,19 +18,18 @@ const HomePage = () => {
     setWeek(event.target.value);
   };
 
-  const handleGetPlayerStats = async () => {
+  const handleGetPlayerReports = async () => {
     try {
       const response = await fetch(
         `http://localhost:8080/player/${game}?player=${encodeURIComponent(searchInput.current.value)}`,
       );
 
       if (response.ok) {
-        console.log(response);
         const data = await response.json();
-        console.log(data);
-        setPlayerStats(data);
+        setPlayerReports(data);
       } else {
         console.error("Couldn't find any stats for this player.");
+        setPlayerReports([]);
       }
     } catch (error) {
       console.error("Error fetching the player stats:", error);
@@ -57,6 +57,7 @@ const HomePage = () => {
   // update stats when filters get changed
   useEffect(() => {
     handleGetGameReports();
+    handleGetPlayerReports();
   }, [game, week]);
 
   return (
@@ -67,7 +68,7 @@ const HomePage = () => {
           : game === "RL"
             ? "bg-custom-RL"
             : "bg-custom-Apex"
-      } relative min-h-dvh p-8`}
+      } relative flex min-h-dvh justify-center p-8`}
     >
       <div
         className={`${
@@ -79,13 +80,13 @@ const HomePage = () => {
         } absolute left-0 top-0 z-0 h-full w-full bg-cover bg-center opacity-40`}
       ></div>
 
-      <div className="relative z-10 mx-auto w-3/4">
-        <div className="py-16">
-          <h2 className="py-8 font-lato text-3xl font-bold">Search</h2>
+      <div className="relative z-10 flex w-3/4 flex-col items-center">
+        <div className="w-full py-16 text-white">
+          <h1 className="py-8 text-3xl font-semibold"> Search </h1>
 
           <div className="flex rounded-md bg-custom-gray p-4">
             <select
-              className="mx-2 rounded-md border border-custom-off-white bg-custom-gray py-8 text-white"
+              className="mx-2 rounded-md border border-custom-off-white bg-custom-gray py-8"
               onChange={handleGameChange}
               value={game}
             >
@@ -95,7 +96,7 @@ const HomePage = () => {
             </select>
 
             <select
-              className="mx-2 rounded-md border border-custom-off-white bg-custom-gray py-8 text-custom-off-white"
+              className="mx-2 rounded-md border border-custom-off-white bg-custom-gray py-8"
               onChange={handleWeekChange}
               value={week}
             >
@@ -117,28 +118,44 @@ const HomePage = () => {
               />
               <IoSearch
                 className="absolute right-4 top-5 h-auto w-12"
-                onClick={handleGetPlayerStats}
+                onClick={handleGetPlayerReports}
               />
             </div>
           </div>
         </div>
 
-        {/* Renders game reports dynamically */}
-        <div className="z-30 w-full rounded-md bg-custom-gray">
-          {gameReports.length > 0 ? (
-            gameReports.map((gameReport, index) => (
-              <GameCard
-                key={index} // Unique game key for each report
-                match={gameReport.match} // Match information
-                teamStats={gameReport.teamStats} // Team stats
-                opponentStats={gameReport.opponentStats} // Opponent stats
+        {playerReports.length > 0 ? (
+          <div className="w-full">
+            <h2 className="py-8 text-2xl font-semibold">Player Stats</h2>
+            {/* Renders player reports dynamically */}
+            <div className="z-30 w-full rounded-md bg-custom-gray">
+              <PlayerReport
+                player={searchInput.current.value}
+                playerReports={playerReports}
               />
-            ))
-          ) : (
-            <h1 className="p-12 text-center text-xl font-bold">
-              Nothing to see here...
-            </h1>
-          )}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="w-full">
+          <h2 className="py-8 text-2xl font-semibold">Game Stats</h2>
+          {/* Renders game reports dynamically */}
+          <div className="z-30 w-full rounded-md bg-custom-gray">
+            {gameReports.length > 0 ? (
+              gameReports.map((gameReport, index) => (
+                <GameCard
+                  key={index} // Unique game key for each report
+                  match={gameReport.match} // Match information
+                  teamStats={gameReport.teamStats} // Team stats
+                  opponentStats={gameReport.opponentStats} // Opponent stats
+                />
+              ))
+            ) : (
+              <h3 className="p-12 text-center text-xl font-bold">
+                Nothing to see here...
+              </h3>
+            )}
+          </div>
         </div>
       </div>
     </div>
