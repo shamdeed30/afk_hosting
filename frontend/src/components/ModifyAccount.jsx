@@ -6,7 +6,7 @@ const ModifyAccount = (props) => {
 
   const handleChangePassword = async (password) => {
     try {
-      const response = await fetch("http://localhost:8080/accounts", {
+      const response = await fetch("http://40.85.147.30:8080/accounts", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const ModifyAccount = (props) => {
 
   const handleDeleteAccount = async () => {
     try {
-      const response = await fetch("http://localhost:8080/accounts", {
+      const response = await fetch("http://40.85.147.30:8080/accounts", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
