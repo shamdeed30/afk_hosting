@@ -13,6 +13,7 @@ def login():
     username = data.get('username')
     password = data.get('password')
 
+    print(username, password)
     try: 
         cursor.execute( 
             "SELECT * from Users WHERE username = %s", (username,)

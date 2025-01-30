@@ -51,26 +51,26 @@ const ModifyAccount = (props) => {
   };
 
   return (
-    <div className="flex items-center justify-center border-b p-4">
+    <div className="flex items-center justify-center p-8">
       <h3 className="p-4 font-bold">{username}</h3>
       <div className="p-4">
         <input
           type="password"
-          placeholder="New Password"
+          placeholder="Change Password"
           ref={passwordChangeInput}
-          className="rounded-lg border p-2"
+          className="p-2"
         />
         <button
           onClick={handleChangePassword}
-          className="rounded-lg border bg-blue-500 p-2 text-white"
+          className="mr-2 bg-custom-off-white px-8 py-2 font-bold text-black hover:bg-custom-gold"
         >
-          Change Password
+          Confirm
         </button>
       </div>
 
       <button
         onClick={handleDeleteAccount}
-        className="rounded-lg border bg-red-500 p-2 text-white"
+        className="m-2 bg-custom-gold px-8 py-2 font-bold text-black"
       >
         Delete Account
       </button>

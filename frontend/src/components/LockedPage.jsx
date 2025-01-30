@@ -4,7 +4,7 @@ import { MdLock } from "react-icons/md";
 
 const LockedPage = () => {
   return (
-    <div className="bg-custom-gray flex min-h-dvh flex-col items-center p-40 text-center text-white">
+    <div className="flex min-h-dvh flex-col items-center bg-custom-gray p-40 text-center text-white">
       <MdLock className="h-auto w-12" />
       <h1 className="p-8 text-3xl font-semibold">
         You must be logged in
@@ -12,7 +12,7 @@ const LockedPage = () => {
         to view this page.
       </h1>
       <Link
-        className="bg-custom-off-white hover:bg-custom-gold px-8 py-2 font-bold text-black transition duration-300"
+        className="bg-custom-off-white px-8 py-2 font-bold text-black hover:bg-custom-gold"
         to="/profile"
       >
         Go to Login

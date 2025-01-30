@@ -54,7 +54,7 @@ const ManageAccounts = () => {
   return (
     <>
       <div className="flex flex-col items-center p-8">
-        <h2 className="text-xl font-bold"> Create Account </h2>
+        <h1 className="p-8 text-3xl font-semibold"> Create Account </h1>
         <input
           type="text"
           placeholder="Username"
@@ -68,21 +68,25 @@ const ManageAccounts = () => {
           className="m-8 w-full border border-black p-4"
         ></input>
         <button
-          className="rounded-lg border bg-blue-500 p-4 text-white"
+          className="m-2 bg-custom-off-white px-8 py-2 font-bold text-black hover:bg-custom-gold"
           onClick={handleCreateAccount}
         >
           Enter
         </button>
       </div>
 
-      <h2 className="text-xl font-bold"> Modify Accounts </h2>
-      {accounts.map((account, index) => (
-        <ModifyAccount
-          key={index}
-          username={account.username}
-          handleGetAccounts={handleGetAccounts}
-        />
-      ))}
+      {accounts.length > 0 ? (
+        <>
+          <h1 className="p-8 text-3xl font-semibold">Modify Accounts</h1>
+          {accounts.map((account, index) => (
+            <ModifyAccount
+              key={index}
+              username={account.username}
+              handleGetAccounts={handleGetAccounts}
+            />
+          ))}
+        </>
+      ) : null}
     </>
   );
 };

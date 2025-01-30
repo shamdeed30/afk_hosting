@@ -14,19 +14,20 @@ def get_player_stats(game):
     player = unquote(data)
 
     game_queries = { 
-        "RL": "SELECT * from RL_game WHERE player_name = %s",
-        "Val": "SELECT * from Val_game WHERE player_name = %s",
-        "Apex": "SELECT * from Apex_game WHERE player_name = %s",
+        "RL": "SELECT school, player_name, score, goals, assists, saves, shots from RL_game WHERE player_name = %s",
+        "Val": "SELECT school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses from Val_game WHERE player_name = %s",
+        "Apex": "SELECT school, player_name, kills, assists, knocks, damage, score from Apex_game WHERE player_name = %s",
         }
     
     try:
         cursor.execute(game_queries[game], (player,))
 
-        stats = cursor.fetchall()
+        reports = cursor.fetchall()
 
-        
+        if not reports:
+            return jsonify({"error": "No stats found for player."}), 404
   
-        return jsonify(stats), 200
+        return jsonify(reports), 200
     
     except Exception as e:
         print(e)
