@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, jsonify, request
 import pymysql
 from db import get_db_connection
@@ -9,10 +10,19 @@ upload_bp = Blueprint('upload', __name__)
 
 @upload_bp.route('/upload_file', methods=['POST'])
 def upload_file():
+    ocr_scripts = {
+        'valorant': "../ocr/Valorant/ValMatch/ValOCRMain.py",
+        'apex-legends': "../ocr/Apex/ApexFuncs.py",
+    }
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
     file = request.files['file']
+    school = request.form.get('school')
+    opponent_school = request.form.get('opponent_school')
+    week = request.form.get('week')
+    game = request.form.get('game')
+
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
@@ -24,36 +34,38 @@ def upload_file():
     file.save(file_path)
 
     try:
-        # Define the OCR script path
-        ocr_script = os.path.join(os.path.dirname(__file__), "../ocr/Valorant/ValMatch/ValOCR.py")
+        if game not in ocr_scripts:
+            return jsonify({"error": f"OCR not supported for game: {game}"}), 400
 
-        # Run the OCR script
-        subprocess.run(
+        # Define the OCR script path
+        ocr_script = os.path.join(os.path.dirname(__file__), ocr_scripts[game])
+
+        # Run the OCR script and capture JSON output
+        process = subprocess.run(
             ["python", ocr_script, "-f", file_path],
+            capture_output=True,
+            text=True,
             check=True
         )
 
-        # Construct the JSON file path based on your directory structure
-        json_file_path = f'/Users/mustafasameen/Documents/senior-capstone-project/backend/flask/JSON/players_uploads/{file.filename.replace(".png","")}.json'
-
-
-        # Load the JSON data from the file
-        with open(json_file_path, 'r') as json_file:
-            ocr_data = json.load(json_file)
-            print("Hey im here")
-
+        # Extract JSON output from stdout
+        ocr_output = process.stdout.strip()
+        ocr_data = json.loads(ocr_output)
+        
+        
         # Format the output to include all required attributes
         formatted_data = {
-            "game": "valorant",  # Assuming the game is Valorant for this OCR
-            "week": "",  # Week will need to be added manually in the ModifyPage
-            "school": "",  # School will need to be added manually in the ModifyPage
-            "opponent": "",  # Opponent will need to be added manually in the ModifyPage
+            "game": game,  # Assuming the game is Valorant for this OCR
+            "week": week,  # Week will need to be added manually in the ModifyPage
+            "school": school,  # School will need to be added manually in the ModifyPage
+            "opponent_school": opponent_school,  # Opponent will need to be added manually in the ModifyPage
             "map": ocr_data.get("map", ""),
+            "code": ocr_data.get("code", ""),
+            "squad_placed": ocr_data.get("squad_placed", ""),
             "players": ocr_data.get("players", []),
         }
-        print(formatted_data)
 
-        return jsonify(formatted_data)
+        return jsonify(formatted_data), 200
 
     except FileNotFoundError:
         return jsonify({"error": "OCR output file not found"}), 500
@@ -63,11 +75,11 @@ def upload_file():
         print(f"OCR script error: {e.stderr}")
         return jsonify({"error": "OCR processing failed"}), 500
 
-
 # Upload new match data (or update existing)
 @upload_bp.route('/upload_match', methods=['POST'])
 def upload_match():
     conn = get_db_connection()
+    # cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor = conn.cursor()
 
     data = request.json  # JSON data from frontend

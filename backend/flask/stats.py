@@ -109,4 +109,3 @@ def get_game_stats(game, week):
     finally:
         cursor.close()
         conn.close()
-
