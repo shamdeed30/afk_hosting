@@ -84,7 +84,7 @@ const HomePage = () => {
         <div className="w-full py-16 text-white">
           <h1 className="py-8 text-3xl font-semibold"> Search </h1>
 
-          <div className="flex rounded-md bg-custom-gray p-4">
+          <div className="h-38 flex rounded-md bg-custom-gray p-4">
             <select
               className="mx-2 rounded-md border border-custom-off-white bg-custom-gray py-8"
               onChange={handleGameChange}
@@ -117,7 +117,7 @@ const HomePage = () => {
                 ref={searchInput}
               />
               <IoSearch
-                className="absolute right-4 top-5 h-auto w-12"
+                className="absolute right-4 top-1/2 h-auto w-12 -translate-y-1/2 transform cursor-pointer"
                 onClick={handleGetPlayerReports}
               />
             </div>
