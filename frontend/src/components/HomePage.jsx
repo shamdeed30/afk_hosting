@@ -34,7 +34,7 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error fetching the player stats:", error);
     }
-  });
+  }, [game]);
 
   const handleGetGameReports = useCallback(async () => {
     try {
@@ -52,7 +52,7 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error fetching game stats:", error);
     }
-  });
+  }, [game, week]);
 
   // update stats when filters get changed
   useEffect(() => {
