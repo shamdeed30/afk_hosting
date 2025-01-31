@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import GameCard from "./GameCard";
 import PlayerReport from "./PlayerReport";
 import { IoSearch } from "react-icons/io5";
@@ -18,7 +18,7 @@ const HomePage = () => {
     setWeek(event.target.value);
   };
 
-  const handleGetPlayerReports = async () => {
+  const handleGetPlayerReports = useCallback(async () => {
     try {
       const response = await fetch(
         `http://40.85.147.30:8080/player/${game}?player=${encodeURIComponent(searchInput.current.value)}`,
@@ -34,9 +34,9 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error fetching the player stats:", error);
     }
-  };
+  });
 
-  const handleGetGameReports = async () => {
+  const handleGetGameReports = useCallback(async () => {
     try {
       const response = await fetch(
         `http://40.85.147.30:8080/stats/${game}/${week}`,
@@ -52,13 +52,13 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error fetching game stats:", error);
     }
-  };
+  });
 
   // update stats when filters get changed
   useEffect(() => {
     handleGetGameReports();
     handleGetPlayerReports();
-  }, [game, week]);
+  }, [game, week, handleGetGameReports, handleGetPlayerReports]);
 
   return (
     <div
