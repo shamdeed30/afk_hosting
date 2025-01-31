@@ -272,7 +272,7 @@ def main():
         if ocr_acs.strip():
             current_acs = ocr_acs.strip()
 
-        current_kills = current_kills = current_assists = '0'
+        current_kills = current_deaths = current_assists = '-1'
         if ocr_kills.strip():
             current_kills = ocr_kills.strip()
         if ocr_deaths.strip():
@@ -304,8 +304,9 @@ def main():
 
     #Save result
     output_path = f'scoreboard_result{args.filename}'
-    #cv.imshow('Result', img_result)
-    #cv.waitKey(0)
+    cv.imshow('Result', img_result)
+    cv.waitKey(0)
+    cv.imwrite(output_path, img_result)
 
     #Ensure valid map name
     for map_name in maps:
