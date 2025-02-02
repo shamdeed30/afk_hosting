@@ -8,7 +8,7 @@ const ManageAccounts = () => {
 
   const handleGetAccounts = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/accounts`);
+      const response = await fetch(`http://40.85.147.30:8080/accounts`);
 
       if (response.ok) {
         const data = await response.json();
@@ -25,7 +25,7 @@ const ManageAccounts = () => {
 
   const handleCreateAccount = async () => {
     try {
-      const response = await fetch("http://localhost:8080/accounts", {
+      const response = await fetch("http://40.85.147.30:8080/accounts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
