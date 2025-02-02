@@ -42,7 +42,7 @@ const UploadPage = () => {
     setLoading(true); // Start the loading animation
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/upload_file", {
+      const response = await fetch("http://40.85.147.30:8080/upload_file", {
         method: "POST",
         body: formData,
       });
