@@ -47,8 +47,8 @@ def main():
     #Define the region of interest (ROI)
     x, y, w, h = 670, 280, 925, 420
     roi_gray = img_gray[y:y+h, x:x+w]
-    cv.imshow(f'ROI', roi_gray)
-    cv.waitKey(0)
+    #cv.imshow(f'ROI', roi_gray)
+    #cv.waitKey(0)
     roi_gray = cv.Canny(roi_gray, 50, 150)
 
 
@@ -154,8 +154,8 @@ def main():
 
     #Save result
     output_path = f'scoreboard_result{args.filename}'
-    cv.imshow('Result', img_result)
-    cv.waitKey(0)
+    #cv.imshow('Result', img_result)
+    #cv.waitKey(0)
     cv.imwrite(output_path, img_result)
 
     #Convert players dictionary into a single JSON structure
