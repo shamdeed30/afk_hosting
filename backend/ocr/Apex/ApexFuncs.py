@@ -20,14 +20,43 @@ def apex_OCR(img_file):
     for i in range(3):
         KAKs.append(read_KAK_crops(f'KAK_crops_temp/crop{i}.jpg'))
 
-    out = {"code" : '_',
-           "squad_placed" : "_",
+    out = {"game_id" : '_',
+           "school" : "_",
            "players" : []
            }
+
+    log = [['.', '.' ,'.'], ['.' ,'.','.'], ['.', '.' ,'.']]
+
+
+    for index, val in enumerate(KAKs):
+        val = val.replace('_', '/')
+        parts = val.split('/')
+        # print(val, '>',parts, '>', len(parts))
+
+        for idx, p in enumerate(parts):
+            print(p)
+            log[index][idx] = p
+        
+
+    # print(log)
+
+
+
     for i in range(3):
-        out["players"].append({"kak" : KAKs[i], "damage": DDs[i]})
+        # out["players"].append({"kak" : KAKs[i], "damage": DDs[i]})
+        out['players'].append({'palyer_name':'_',
+                                'kills':log[i][0],
+                                'assists':log[i][1],
+                                'knocks':log[i][2],
+                                'damage':DDs[i],
+                                'score':'_',
+                                'placement':'_',
+                                'game_number':'_',
+                                'week_number':'_'})
     
     return out
+
+
 
 
 
@@ -713,6 +742,7 @@ def read_KAK_crops(img_file):
         str += char
             # print('char found : ', i)
 
+    # print('KAK: ', str)
     return str
 
 
