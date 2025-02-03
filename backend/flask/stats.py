@@ -14,42 +14,42 @@ def get_game_stats(game, week):
         "RL": {
             "match_query": """
                 SELECT game_id, school, opponent, did_win, team_score, opponent_score 
-                FROM RL_game 
+                FROM rl_game 
                 WHERE week_number = %s 
                 GROUP BY game_id 
                 ORDER BY game_number
             """,
             "player_query": """
                 SELECT school, player_name, score, goals, assists, saves, shots 
-                FROM RL_game 
+                FROM rl_game 
                 WHERE game_id = %s
             """
         },
         "Val": {
             "match_query": """
                 SELECT game_id, school, opponent, did_win, team_score, opponent_score 
-                FROM Val_game 
+                FROM val_game 
                 WHERE week_number = %s 
                 GROUP BY game_id 
                 ORDER BY game_number
             """,
             "player_query": """
                 SELECT school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses 
-                FROM Val_game 
+                FROM val_game 
                 WHERE game_id = %s
             """
         },
         "Apex": {
             "match_query": """
                 SELECT game_id, school, opponent, placement AS team_placement 
-                FROM Apex_game 
+                FROM apex_game 
                 WHERE week_number = %s 
                 GROUP BY game_id 
                 ORDER BY game_number
             """,
             "player_query": """
                 SELECT school, player_name, kills, assists, knocks, damage, score 
-                FROM Apex_game 
+                FROM apex_game 
                 WHERE game_id = %s
             """
         }
