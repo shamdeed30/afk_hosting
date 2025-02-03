@@ -8,7 +8,7 @@ const ModifyPage = () => {
 
   // Accept OCR data passed from UploadPage or set default empty structure
   const initialData = location.state?.ocrData || {
-    image_url: "", // 🔹 Backend URL of the uploaded image
+    image_url: "",
     game: "",
     week: "",
     school: "",
