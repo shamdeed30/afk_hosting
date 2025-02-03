@@ -50,6 +50,17 @@ const NavigationPage = ({ setHamburgerMenu }) => {
           </Link>
           {loggedIn ? null : <MdLock className="h-auto w-12" />}
         </div>
+
+        <div className="flex p-8 text-custom-off-white hover:text-custom-gold">
+          <Link
+            className="pr-4 text-5xl"
+            to="/superadmin"
+            onClick={() => setHamburgerMenu(false)}
+          >
+            Super Admin
+          </Link>
+          {loggedIn ? null : <MdLock className="h-auto w-12" />}
+        </div>
       </div>
     </div>
   );

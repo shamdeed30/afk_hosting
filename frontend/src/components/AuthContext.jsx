@@ -3,13 +3,13 @@ import React, { useState, createContext, useContext } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [username, setUsername] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
 
   const login = async (username, password) => {
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch("http://40.85.147.30:8080/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
