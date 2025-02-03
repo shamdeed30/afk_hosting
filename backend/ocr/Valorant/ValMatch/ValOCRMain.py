@@ -18,7 +18,7 @@ import sys
 #5. If abnormal data is detected (e.g. 0 ACS, 0/0/0 KDA, 0 Econ Rating), uploader will be required to verify the data
 
 def main():
-    pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract'
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
 
     parser = argparse.ArgumentParser(
                         prog='Valorant OCR',
