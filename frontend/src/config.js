@@ -6,6 +6,8 @@ const API_ENDPOINTS = {
   getGameReports: (game, week) => `${API_BASE_URL}/stats/${game}/${week}`,
   uploadFile: `${API_BASE_URL}/upload_file`,
   uploadMatch: `${API_BASE_URL}/upload_match`,
+  getAllDisputes: `${API_BASE_URL}/get_all_disputes`,
+  resolveDispute: (gameId) => `${API_BASE_URL}/resolve_dispute/${gameId}`,
 };
 
 export { API_BASE_URL, API_ENDPOINTS };
