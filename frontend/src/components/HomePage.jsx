@@ -27,7 +27,7 @@ const HomePage = () => {
   const handleGetPlayerReports = useCallback(async () => {
     try {
       const response = await fetch(
-        API_ENDPOINTS.getPlayerStats(game, searchInput.current.value),
+        API_ENDPOINTS.getPlayerStats(videogame, searchInput.current.value),
       );
 
       if (response.ok) {
@@ -44,7 +44,7 @@ const HomePage = () => {
 
   const handleGetMatchReports = useCallback(async () => {
     try {
-      const response = await fetch(API_ENDPOINTS.getGameReports(game, week));
+      const response = await fetch(API_ENDPOINTS.getGameReports(videogame, week));
 
       if (response.ok) {
         const data = await response.json();
