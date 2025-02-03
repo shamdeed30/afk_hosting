@@ -44,13 +44,7 @@ const HomePage = () => {
 
   const handleGetMatchReports = useCallback(async () => {
     try {
-<<<<<<< HEAD
       const response = await fetch(API_ENDPOINTS.getGameReports(videogame, week));
-=======
-      const response = await fetch(
-        API_ENDPOINTS.getGameReports(videogame, week),
-      );
->>>>>>> d9cca5352d2bf9c895441dadf53498b8b54b2d83
 
       if (response.ok) {
         const data = await response.json();
