@@ -59,7 +59,7 @@ const DisputesManagementPage = () => {
     ];
 
     setTimeout(() => {
-      setDisputes(mockDisputes); // 🔹 Simulate API Response Delay
+      setDisputes(mockDisputes);
       setLoading(false);
     }, 1000);
   }, []);
@@ -72,10 +72,9 @@ const DisputesManagementPage = () => {
   // Function to resolve a dispute
   const handleResolve = async (gameId) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8080/resolve_dispute/${gameId}`,
-        { method: "POST" },
-      );
+      const response = await fetch(API_ENDPOINTS.resolveDispute(gameId), {
+        method: "POST",
+      });
 
       if (response.ok) {
         setDisputes((prevDisputes) =>
