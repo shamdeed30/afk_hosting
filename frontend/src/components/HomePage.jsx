@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import GameCard from "./GameCard";
 import PlayerReport from "./PlayerReport";
 import { IoSearch } from "react-icons/io5";
+import { API_ENDPOINTS } from "../config";
 
 const HomePage = () => {
   const [game, setGame] = useState("RL");
@@ -21,7 +22,7 @@ const HomePage = () => {
   const handleGetPlayerReports = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://40.85.147.30:8080/player/${game}?player=${encodeURIComponent(searchInput.current.value)}`,
+        API_ENDPOINTS.getPlayerStats(game, searchInput.current.value),
       );
 
       if (response.ok) {
@@ -38,9 +39,7 @@ const HomePage = () => {
 
   const handleGetGameReports = useCallback(async () => {
     try {
-      const response = await fetch(
-        `http://40.85.147.30:8080/stats/${game}/${week}`,
-      );
+      const response = await fetch(API_ENDPOINTS.getGameReports(game, week));
 
       if (response.ok) {
         const data = await response.json();
