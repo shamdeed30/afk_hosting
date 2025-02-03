@@ -91,7 +91,7 @@ def upload_match():
     
     if request.method == "POST":
         try:
-            if game not in ["RL", "Val", "Apex"]:
+            if game not in ["rocket-league", "valorant", "apex-legends"]:
                 return jsonify({"error": f"Game '{game}' is not supported"}), 400
 
             # 🔹 Generate a new unique game_id if one isn't provided
@@ -99,17 +99,17 @@ def upload_match():
 
             # Define game-specific queries
             game_queries = {
-                "RL": """
+                "rocket-league": """
                     INSERT INTO rl_game (game_id, school, player_name, score, goals, assists, saves, shots, did_win, game_number, week_number)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE score = VALUES(score), goals = VALUES(goals), assists = VALUES(assists), saves = VALUES(saves), shots = VALUES(shots);
                 """,
-                "Val": """
+                "valorant": """
                     INSERT INTO val_game (game_id, school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses, agent, map, did_win, game_number, week_number)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE combat_score = VALUES(combat_score), kills = VALUES(kills), deaths = VALUES(deaths), assists = VALUES(assists), econ = VALUES(econ), fb = VALUES(fb), plants = VALUES(plants), defuses = VALUES(defuses), agent = VALUES(agent), map = VALUES(map);
                 """,
-                "Apex": """
+                "apex-legends": """
                     INSERT INTO apex_game (game_id, school, player_name, kills, assists, knocks, damage, score, placement, game_number, week_number)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE kills = VALUES(kills), assists = VALUES(assists), knocks = VALUES(knocks), damage = VALUES(damage), score = VALUES(score), placement = VALUES(placement);
@@ -118,7 +118,7 @@ def upload_match():
 
             # Insert player data
             for player in data["players"]:
-                if game == "RL":
+                if game == "rocket-league":
                     cursor.execute(
                         game_queries[game],
                         (
@@ -128,7 +128,7 @@ def upload_match():
                             data.get("did_win"), data.get("game_number"), data.get("week")
                         )
                     )
-                elif game == "Val":
+                elif game == "valorant":
                     cursor.execute(
                         game_queries[game],
                         (
@@ -139,7 +139,7 @@ def upload_match():
                             data.get("did_win"), data.get("game_number"), data.get("week")
                         )
                     )
-                elif game == "Apex":
+                elif game == "apex-legends":
                     cursor.execute(
                         game_queries[game],
                         (
