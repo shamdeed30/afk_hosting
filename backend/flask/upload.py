@@ -93,17 +93,17 @@ def upload_match():
         # Define game-specific insert queries
         game_queries = {
             "RL": """
-                INSERT INTO RL_game (game_id, school, player_name, score, goals, assists, saves, shots, team_score, did_win, opponent, opponent_score, game_number, week_number)
+                INSERT INTO rl_game (game_id, school, player_name, score, goals, assists, saves, shots, team_score, did_win, opponent, opponent_score, game_number, week_number)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE score = VALUES(score), goals = VALUES(goals), assists = VALUES(assists), saves = VALUES(saves), shots = VALUES(shots)
             """,
             "Val": """
-                INSERT INTO Val_game (game_id, school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses, agent, map, team_score, did_win, opponent, opponent_score, game_num, week_num)
+                INSERT INTO val_game (game_id, school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses, agent, map, team_score, did_win, opponent, opponent_score, game_num, week_num)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE combat_score = VALUES(combat_score), kills = VALUES(kills), deaths = VALUES(deaths), assists = VALUES(assists), econ = VALUES(econ), fb = VALUES(fb), plants = VALUES(plants), defuses = VALUES(defuses), agent = VALUES(agent), map = VALUES(map)
             """,
             "Apex": """
-                INSERT INTO Apex_game (game_id, school, player_name, kills, assists, knocks, damage, score, placement, game_num, week_num)
+                INSERT INTO apex_game (game_id, school, player_name, kills, assists, knocks, damage, score, placement, game_number, week_number)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE kills = VALUES(kills), assists = VALUES(assists), knocks = VALUES(knocks), damage = VALUES(damage), score = VALUES(score), placement = VALUES(placement)
             """,

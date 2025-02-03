@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 
 app = Flask(__name__)
+app.json.sort_keys = False
 CORS(app)
 
 # db config
