@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../config";
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [game, setGame] = useState("");
   const [week, setWeek] = useState("");
+  const [game_number, setGameNumber] = useState("");
   const [school, setSchool] = useState("");
   const [opponent_school, setOpponentSchool] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,14 +44,14 @@ const UploadPage = () => {
     setLoading(true); // Start the loading animation
 
     try {
-      const response = await fetch("http://40.85.147.30:8080/upload_file", {
+      const response = await fetch(API_ENDPOINTS.uploadFile, {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         const ocrData = await response.json();
-        navigate("/modify", { state: { ocrData } });
+        navigate("/modify", { state: { ocrData, file } });
       } else {
         console.error("File upload failed.");
         alert("Failed to process the file.");
@@ -94,9 +96,20 @@ const UploadPage = () => {
               onChange={(e) => setWeek(e.target.value)}
             >
               <option value="">Select Week</option>
-              <option value="week-1">Week 1</option>
-              <option value="week-2">Week 2</option>
-              <option value="week-3">Week 3</option>
+              <option value="1">Week 1</option>
+              <option value="2">Week 2</option>
+              <option value="3">Week 3</option>
+            </select>
+
+            <select
+              className="mx-2 rounded-md border border-custom-off-white bg-custom-gray py-8"
+              value={game_number}
+              onChange={(e) => setGameNumber(e.target.value)}
+            >
+              <option value="">Select Game Number</option>
+              <option value="1">Game 1</option>
+              <option value="2">Game 2</option>
+              <option value="3">Game 3</option>
             </select>
 
             <select

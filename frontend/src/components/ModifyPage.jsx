@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../config";
 
 const ModifyPage = () => {
   const location = useLocation();
@@ -7,6 +8,7 @@ const ModifyPage = () => {
 
   // Accept OCR data passed from UploadPage or set default empty structure
   const initialData = location.state?.ocrData || {
+    image_url: "",
     game: "",
     week: "",
     school: "",
@@ -15,31 +17,46 @@ const ModifyPage = () => {
     code: "",
     squad_placed: "",
     players: [],
+    game_number: "",
+    did_win: "1",
   };
 
+  const file = location.state?.file || null; // 🔹 File object passed from UploadPage
   const [formData, setFormData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
-  // Update handler for editable fields
+  // 🔹 Generate a preview of the image either from file (frontend) or from backend URL
+  useEffect(() => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => setImagePreview(e.target.result);
+      reader.readAsDataURL(file);
+    } else if (formData.image_url) {
+      setImagePreview(API_ENDPOINTS.baseURL + formData.image_url); // 🔹 Load image from backend
+    }
+  }, [file, formData.image_url]);
+
+  // 🔹 Update handler for editable fields in player stats
   const handleInputChange = (event, index, key) => {
     const updatedPlayers = [...formData.players];
     updatedPlayers[index][key] = event.target.value;
     setFormData({ ...formData, players: updatedPlayers });
   };
 
-  // Update handler for dropdowns (e.g., game, week)
+  // 🔹 Update handler for dropdowns (e.g., game, week)
   const handleDropdownChange = (event, key) => {
     setFormData({ ...formData, [key]: event.target.value });
   };
 
-  // Handle submission of the updated data to the backend
+  // 🔹 Submit the modified data to the backend
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("http://40.85.147.30:8080/upload_match", {
+      const response = await fetch(API_ENDPOINTS.uploadMatch, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -78,16 +95,30 @@ const ModifyPage = () => {
     <div className="flex min-h-screen flex-col items-center justify-center bg-custom-blue p-8">
       <h1 className="mb-8 text-4xl font-bold text-white">Modify Game Data</h1>
 
-      {/* Display errors, if any */}
+      {/* 🔹 Display the uploaded image from file or backend URL */}
+      {imagePreview ? (
+        <div className="mb-6 w-3/4">
+          <h2 className="text-xl font-semibold text-white">Uploaded Image</h2>
+          <img
+            src={imagePreview}
+            alt="Uploaded Match Screenshot"
+            className="mt-4 w-full rounded-lg border-2 border-custom-off-white shadow-lg"
+          />
+        </div>
+      ) : (
+        <p className="text-white">No image available</p>
+      )}
+
+      {/* 🔹 Display error messages if any */}
       {error && (
         <div className="mb-6 w-3/4 rounded bg-red-100 p-4 text-red-700">
           {error}
         </div>
       )}
 
-      {/* Editable Match Info */}
+      {/* 🔹 Editable Match Info */}
       <div className="mb-8 w-3/4 rounded-md bg-custom-gray p-6 text-white shadow-lg">
-        <h2 className="mb-4 text-2xl font-semibold">Match Details</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Game Details</h2>
 
         <div className="flex flex-wrap justify-between">
           <select
@@ -105,9 +136,19 @@ const ModifyPage = () => {
             value={formData.week}
             onChange={(e) => handleDropdownChange(e, "week")}
           >
-            <option value="week-1">Week 1</option>
-            <option value="week-2">Week 2</option>
-            <option value="week-3">Week 3</option>
+            <option value="1">Week 1</option>
+            <option value="2">Week 2</option>
+            <option value="3">Week 3</option>
+          </select>
+
+          <select
+            className="mx-2 mb-4 w-[48%] rounded-md border border-custom-off-white bg-custom-gray p-4 text-white"
+            value={formData.game_number}
+            onChange={(e) => handleDropdownChange(e, "game_number")}
+          >
+            <option value="1">Game 1</option>
+            <option value="2">Game 2</option>
+            <option value="3">Game 3</option>
           </select>
 
           {formData.game === "valorant" && (
@@ -152,7 +193,7 @@ const ModifyPage = () => {
         </div>
       </div>
 
-      {/* Editable Player Data */}
+      {/* 🔹 Editable Player Data */}
       <div className="w-3/4">
         <h2 className="mb-4 text-2xl font-semibold text-white">Player Stats</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -181,6 +222,7 @@ const ModifyPage = () => {
         </div>
       </div>
 
+      {/* 🔹 Submit Button */}
       <button
         className="mt-8 rounded-lg bg-custom-off-white px-6 py-3 text-black transition hover:bg-custom-gold"
         onClick={handleSubmit}
