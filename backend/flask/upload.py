@@ -125,7 +125,7 @@ def upload_match():
                     VALUES (%s, %s, %s, %s, %s, %s, %s);
                     """,
                     "rocket-league": """INSERT INTO rl_picture (
-                        game_id, game_number, week_number, picture)
+                        game_id, game_number, week_number)
                     VALUES (%s, %s, %s, %s, %s);
                     """,
                 
