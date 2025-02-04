@@ -20,6 +20,8 @@ import sys
 def main():
     #usr for vm, homebrew for mac, program files for Windows
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    # pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract' # For Mac
+    
     #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
     parser = argparse.ArgumentParser(
@@ -330,10 +332,10 @@ def main():
     json_output_path = os.path.join(json_output_dir, f'players_{args.filename.replace(".png","")}.json')
     json_output_path = json_output_path.replace(".jpg", "")
 
-    with open(json_output_path, 'w') as json_file:
-        json.dump(result, json_file, indent=4)
+    # with open(json_output_path, 'w') as json_file:
+    #     json.dump(result, json_file, indent=4)
     sys.stdout.write(json.dumps(result)) #Ensures only the JSON result is sent to stdout
-    return json_file
+    # return json_file
 
 if __name__ == '__main__':
     main()

@@ -17,6 +17,8 @@ const ModifyPage = () => {
     code: "",
     squad_placed: "",
     players: [],
+    game_number: "",
+    did_win: "1",
   };
 
   const file = location.state?.file || null; // 🔹 File object passed from UploadPage
@@ -134,9 +136,19 @@ const ModifyPage = () => {
             value={formData.week}
             onChange={(e) => handleDropdownChange(e, "week")}
           >
-            <option value="week-1">Week 1</option>
-            <option value="week-2">Week 2</option>
-            <option value="week-3">Week 3</option>
+            <option value="1">Week 1</option>
+            <option value="2">Week 2</option>
+            <option value="3">Week 3</option>
+          </select>
+
+          <select
+            className="mx-2 mb-4 w-[48%] rounded-md border border-custom-off-white bg-custom-gray p-4 text-white"
+            value={formData.game_number}
+            onChange={(e) => handleDropdownChange(e, "game_number")}
+          >
+            <option value="1">Game 1</option>
+            <option value="2">Game 2</option>
+            <option value="3">Game 3</option>
           </select>
 
           {formData.game === "valorant" && (

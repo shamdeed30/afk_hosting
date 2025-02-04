@@ -132,8 +132,8 @@ def upload_match():
                     cursor.execute(
                         game_queries[game],
                         (
-                            game_id, player["school"], player["playerName"],
-                            player["combat_score"], player["kills"], player["deaths"],
+                            game_id, player["school"], player["name"],
+                            player["acs"], player["kills"], player["deaths"],
                             player["assists"], player["econ"], player["fb"],
                             player["plants"], player["defuses"], player["agent"], player["map"],
                             data.get("did_win"), data.get("game_number"), data.get("week")
