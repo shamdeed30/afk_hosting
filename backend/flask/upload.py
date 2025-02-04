@@ -116,9 +116,17 @@ def upload_match():
             }
             
             picture_queries = {
+                "rocket-league": """INSERT INTO rl_picture (
+                        game_id, game_number, week_number, w_school, l_school, w_points, l_points)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
+                    """,
                 "valorant": """INSERT INTO val_picture (
                         game_id, game_number, week_number, w_school, l_school, w_points, l_points)
                     VALUES (%s, %s, %s, %s, %s, %s, %s);
+                    """,
+                    "rocket-league": """INSERT INTO rl_picture (
+                        game_id, game_number, week_number, picture)
+                    VALUES (%s, %s, %s, %s, %s);
                     """,
                 
             }
@@ -134,6 +142,11 @@ def upload_match():
                             player["saves"], player["shots"], 
                             data.get("did_win"), data.get("game_number"), data.get("week")
                         )
+                    )
+                    cursor.execute(
+                        picture_queries[game],
+                        game_id, data.get("game_number"), data.get("week"), data["school"],
+                        data["opponent_school"], data["w_points"], data["l_points"]
                     )
                 elif game == "valorant":
                     cursor.execute(
@@ -160,6 +173,7 @@ def upload_match():
                             player["damage"], player["score"], player["placement"],
                             data.get("game_number"), data.get("week")
                         )
+                        
                     )
 
             conn.commit()  # 🔹 Save changes
