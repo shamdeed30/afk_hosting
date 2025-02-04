@@ -101,19 +101,26 @@ def upload_match():
             game_queries = {
                 "rocket-league": """
                     INSERT INTO rl_game (game_id, school, player_name, score, goals, assists, saves, shots, did_win, game_number, week_number)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE score = VALUES(score), goals = VALUES(goals), assists = VALUES(assists), saves = VALUES(saves), shots = VALUES(shots);
-                """,
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                    """,
                 "valorant": """
                     INSERT INTO val_game (game_id, school, player_name, combat_score, kills, deaths, assists, econ, fb, plants, defuses, agent, map, did_win, game_number, week_number)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE combat_score = VALUES(combat_score), kills = VALUES(kills), deaths = VALUES(deaths), assists = VALUES(assists), econ = VALUES(econ), fb = VALUES(fb), plants = VALUES(plants), defuses = VALUES(defuses), agent = VALUES(agent), map = VALUES(map);
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                    )
                 """,
                 "apex-legends": """
                     INSERT INTO apex_game (game_id, school, player_name, kills, assists, knocks, damage, score, placement, game_number, week_number)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE kills = VALUES(kills), assists = VALUES(assists), knocks = VALUES(knocks), damage = VALUES(damage), score = VALUES(score), placement = VALUES(placement);
                 """,
+            }
+            
+            picture_queries = {
+                "valorant": """INSERT INTO val_picture (
+                        game_id, game_number, week_number, w_school, l_school, w_points, l_points)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
+                    """,
+                
             }
 
             # Insert player data
@@ -122,7 +129,7 @@ def upload_match():
                     cursor.execute(
                         game_queries[game],
                         (
-                            game_id, player["school"], player["playerName"],
+                            game_id, data["school"], player["playerName"],
                             player["score"], player["goals"], player["assists"],
                             player["saves"], player["shots"], 
                             data.get("did_win"), data.get("game_number"), data.get("week")
@@ -139,11 +146,16 @@ def upload_match():
                             data.get("did_win"), data.get("game_number"), data.get("week")
                         )
                     )
+                    cursor.execute(
+                        picture_queries[game],
+                        game_id, data.get("game_number"), data.get("week"), data["school"],
+                        data["opponent_school"], data["w_points"], data["l_points"]
+                    )
                 elif game == "apex-legends":
                     cursor.execute(
                         game_queries[game],
                         (
-                            game_id, player["school"], player["name"],
+                            game_id, data["school"], player["name"],
                             player["kills"], player["assists"], player["knocks"],
                             player["damage"], player["score"], player["placement"],
                             data.get("game_number"), data.get("week")
