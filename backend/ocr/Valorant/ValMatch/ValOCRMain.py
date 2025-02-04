@@ -19,10 +19,9 @@ import sys
 
 def main():
     #usr for vm, homebrew for mac, program files for Windows
-    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    # pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract' # For Mac
-    
-    #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract' # For VM
+    #pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract' # For Mac
+    #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe' # For Windows
 
     parser = argparse.ArgumentParser(
                         prog='Valorant OCR',
@@ -58,6 +57,9 @@ def main():
     )
 
     img_map = cv.resize(img_map, None, fx=4, fy=4, interpolation=cv.INTER_CUBIC)
+
+    img_score0 = img_gray[80:150, 730:800]
+    img_score1 = img_gray[80:150, 1075:1160]
 
     #Define the region of interest (ROI)
     x, y, w, h = 240, 280, 120, 700
@@ -254,6 +256,8 @@ def main():
         ocr_fb = pytesseract.image_to_string(strip_fb, config=config1)
         ocr_p = pytesseract.image_to_string(strip_p, config=config1)
         ocr_d = pytesseract.image_to_string(strip_d, config=config1)
+        ocr_s0 = pytesseract.image_to_string(img_score0, config=config1).replace('\n', '')
+        ocr_s1 = pytesseract.image_to_string(img_score1, config=config1).replace('\n', '')
         #print(f"OCR Stats for {ocr_name.split(' ')[0]} on {agent}: {ocr_acs.strip()}, {ocr_kills.strip()}, {ocr_deaths.strip()}, {ocr_assists.strip()}, {ocr_econ.strip()}, {ocr_fb.strip()}, {ocr_p.strip()}, {ocr_d.strip()}")
         #Update player stats, using 0 if not found
         _, current_acs, current_kills, current_deaths, current_assists, current_econ, current_fb, current_p, current_d = players[ocr_name.split(' ')[0]]
@@ -307,6 +311,8 @@ def main():
     players = dict(players)
     result = {
         "map": ocr_map.strip(),
+        "w_points": ocr_s0,
+        "l_points": ocr_s1,
         "players": [
             {
                 "name": name,
