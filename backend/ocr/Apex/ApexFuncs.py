@@ -9,6 +9,10 @@ import numpy as np
 from difflib import SequenceMatcher
 
 def apex_OCR(img_file):
+    # Ensure directories exist
+    os.makedirs("DD_crops_temp", exist_ok=True)
+    os.makedirs("KAK_crops_temp", exist_ok=True)
+
     # damage dealt
     DDs = []
     get_DD_crops(img_file)
@@ -22,8 +26,7 @@ def apex_OCR(img_file):
     for i in range(3):
         KAKs.append(read_KAK_crops(f'KAK_crops_temp/crop{i}.jpg'))
 
-    out = {"game_id" : '_',
-           "school" : "_",
+    out = {
            "players" : []
            }
 
@@ -36,14 +39,14 @@ def apex_OCR(img_file):
         # print(val, '>',parts, '>', len(parts))
 
         for idx, p in enumerate(parts):
-            print(p)
+            #print(p)
             log[index][idx] = p
 
 
 
     for i in range(3):
         # out["players"].append({"kak" : KAKs[i], "damage": DDs[i]})
-        out['players'].append({'palyer_name':'_',
+        out['players'].append({'player_name':'_',
                                 'kills':log[i][0],
                                 'assists':log[i][1],
                                 'knocks':log[i][2],
